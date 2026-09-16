@@ -1738,9 +1738,7 @@ function doneThenLocation(){ if(window.__doneTimer){ clearTimeout(window.__doneT
   if(m){ m.classList.add('hide'); setTimeout(function(){ m.classList.remove('show','hide'); m.style.display='none'; }, 400); }
   setTimeout(showLocModal, 460);   /* location permission after the confirmation */
 }
-function scheduleCheckin(){ if(window.__checkinTimer) clearTimeout(window.__checkinTimer);
-  if(window.__suppressNextCheckin){ window.__suppressNextCheckin=false; return; }   /* one-time skip, e.g. right after sign-up */
-  window.__checkinTimer=setTimeout(showCheckinModal, 2000); }   /* every time home is shown, after 2s */
+function scheduleCheckin(){ if(window.__checkinTimer) clearTimeout(window.__checkinTimer); }   /* Daily Check-In popup removed — no longer auto-prompts */
 function showCheckinModal(){ var m=document.getElementById('checkinModal'); if(!m) return;
   if((document.body.getAttribute('data-screen')||'home')!=='home') return;   /* daily check-in prompt only on the home page */
   if(window.__tourActive) return;                                            /* don't interrupt the first-run tour */
@@ -2236,7 +2234,6 @@ function verifyOtp(){
   hideOtpScreen();
   hideDetailsScreen();
   applyRoleRestrictions();
-  window.__suppressNextCheckin=true;   /* don't interrupt right after sign-up with the daily check-in popup */
   if(typeof goScreen==='function') goScreen('home');
 }
 function resendOtp(){
