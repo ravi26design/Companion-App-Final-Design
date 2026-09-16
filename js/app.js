@@ -1534,8 +1534,9 @@ function loginContinue(){
   if(d.length<10){ var row=document.getElementById('loginPhRow'); if(row){ row.classList.add('err'); setTimeout(function(){ row.classList.remove('err'); },1200); } if(inp) inp.focus(); return; }
   window.__phone=(typeof __cc!=='undefined'&&__cc?__cc.d:'+1')+d;
   var existing=rhGetUser(window.__phone);
-  if(existing){
-    /* registered → just verify with OTP, then home (verifyOtp routes a known number home) */
+  window.__familyLogin=(window.__phone===RH_FAMILY_LINK.phone && !existing);
+  if(existing || window.__familyLogin){
+    /* registered (or a linked family number) → just verify with OTP, then route accordingly */
     showOtpScreen();   /* login screen stays behind the dimmed OTP sheet */
   } else {
     /* first time → send them to Register with the number auto-filled */
@@ -1545,6 +1546,38 @@ function loginContinue(){
     var pf=document.getElementById('phoneInput'); if(pf) pf.value=(inp?inp.value:'');   /* prefill the formatted number */
     setTimeout(function(){ var n=document.getElementById('dtName'); if(n) n.focus(); }, 320);
   }
+}
+/* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */
+var RH_FAMILY_LINK={ phone:'+15625550193', patientName:'John David', memberName:'Sarah M.' };   /* demo: Mom's number from the patient's own contacts already links here */
+function showCompanionScreen(){
+  var s=document.getElementById('companionScreen'); if(!s) return;
+  var pn=document.getElementById('cpPatientName'); if(pn) pn.textContent=RH_FAMILY_LINK.patientName;
+  var pf=document.getElementById('cpPatientFirst'); if(pf) pf.textContent=RH_FAMILY_LINK.patientName.split(' ')[0];
+  var nm=document.getElementById('cpName'); if(nm) nm.value=RH_FAMILY_LINK.memberName;   /* autofilled — we already know who this number belongs to */
+  s.style.display=''; s.classList.remove('hide'); s.classList.add('show');
+}
+function hideCompanionScreen(){
+  var s=document.getElementById('companionScreen'); if(!s) return;
+  s.classList.add('hide'); setTimeout(function(){ s.style.display='none'; s.classList.remove('show','hide'); }, 420);
+}
+function companionBack(){
+  hideCompanionScreen();
+  var w=document.getElementById('welcome'); if(w){ w.style.display=''; w.classList.remove('hide'); w.classList.add('show'); }
+  if(window.__wc && __wc.start) __wc.start();
+}
+function submitCompanion(){
+  var name=document.getElementById('cpName'), rel=document.getElementById('cpRelationship');
+  var nameVal=((name&&name.value)||'').trim();
+  if(!nameVal){ dtErr('cpNameField'); if(name) name.focus(); return; }
+  var relVal=(rel&&rel.value)||'';
+  if(!relVal){ dtErr('cpRelField'); return; }
+  window.__profile={ name:nameVal, role:'family', relationship:relVal, linkedPatient:RH_FAMILY_LINK.patientName, phone:window.__phone };
+  try{ localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); localStorage.setItem('rh_onboarded','1'); }catch(e){}
+  rhRegisterUser(window.__profile);   /* remember this number so a later log-in goes straight back to home */
+  var rn=document.getElementById('rhName'); if(rn) rn.textContent=nameVal.split(' ')[0];
+  hideCompanionScreen();
+  if(typeof goScreen==='function') goScreen('home');
+  if(typeof scheduleCheckin==='function') scheduleCheckin();
 }
 /* ═══ MOBILE NUMBER ═══ */
 function showPhoneScreen(){ var p=document.getElementById('phoneScreen'); if(p) p.classList.add('show'); }
@@ -2160,6 +2193,13 @@ function verifyOtp(){
   if(code.length<6){ otpError(); return; }
   if(window.__otpCode && code!==window.__otpCode){ otpError(); return; }   /* wrong code */
   window.__otp=code;                /* correct -> auto-verify */
+  if(window.__familyLogin){         /* linked family number -> companion set-up, not the patient home */
+    window.__familyLogin=false;
+    hideOtpScreen();
+    hideLoginScreen();
+    showCompanionScreen();
+    return;
+  }
   var existing=rhGetUser(window.__phone);
   if(existing){                     /* returning number -> straight to home, skip onboarding */
     window.__profile=existing;

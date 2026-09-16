@@ -113,6 +113,40 @@
   </div>
 </div>
 
+<!-- ═══ COMPANION SCREEN (shown after a linked family member's number verifies) ═══ -->
+<div id="companionScreen" aria-hidden="true">
+  <button class="lg-back" type="button" onclick="companionBack()" aria-label="Back"><i data-lucide="arrow-left"></i></button>
+  <div class="phone-inner">
+    <div class="ph-stage dt-stage">
+      <div class="ph-badge ph-badge-ic"><i data-lucide="heart"></i></div>
+      <h1 class="ph-title">You're a family member of <span id="cpPatientName">John David</span></h1>
+      <p class="ph-sub">Set up your login to follow <span id="cpPatientFirst">John</span>'s home progress and rewards.</p>
+      <div class="dt-fields">
+        <div class="dt-field" id="cpNameField">
+          <label class="dt-label" for="cpName">Your name <span class="dt-req">*</span></label>
+          <input id="cpName" class="dt-input" type="text" placeholder="Your name" autocomplete="name">
+        </div>
+        <div class="dt-field" id="cpRelField">
+          <label class="dt-label" for="cpRelationship">Your relationship <span class="dt-req">*</span></label>
+          <div class="dt-select-wrap">
+            <select id="cpRelationship" class="dt-input dt-select">
+              <option value="" selected disabled>Choose one</option>
+              <option value="parent">Parent</option>
+              <option value="spouse">Spouse / Partner</option>
+              <option value="sibling">Sibling</option>
+              <option value="child">Child</option>
+              <option value="other-family">Other family</option>
+              <option value="friend">Friend</option>
+            </select>
+            <i data-lucide="chevron-down" class="dt-select-chev"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    <button class="wc-begin ph-send" type="button" onclick="submitCompanion()">Create my companion login <span aria-hidden="true">&rarr;</span></button>
+  </div>
+</div>
+
 <!-- ═══ DETAILS SCREEN (name / email / age) ═══ -->
 <div id="detailsScreen" aria-hidden="true">
   <button class="lg-back" type="button" onclick="detailsBack()" aria-label="Back"><i data-lucide="arrow-left"></i></button>
