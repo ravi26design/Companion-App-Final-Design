@@ -1553,12 +1553,10 @@ function loginContinue(){
     /* registered (or a linked family number) → just verify with OTP, then route accordingly */
     showOtpScreen();   /* login screen stays behind the dimmed OTP sheet */
   } else {
-    /* first time → send them to Register with the number auto-filled */
-    window.__detailsFrom='login';
-    hideLoginScreen();
-    showDetailsScreen();
-    var pf=document.getElementById('phoneInput'); if(pf) pf.value=(inp?inp.value:'');   /* prefill the formatted number */
-    setTimeout(function(){ var n=document.getElementById('dtName'); if(n) n.focus(); }, 320);
+    /* no self-registration — unrecognized numbers can't get in */
+    var row=document.getElementById('loginPhRow'); if(row){ row.classList.add('err'); setTimeout(function(){ row.classList.remove('err'); },1200); }
+    var em=document.getElementById('loginPhErrMsg'); if(em) em.style.display='';
+    if(inp) inp.focus();
   }
 }
 /* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */

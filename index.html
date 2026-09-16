@@ -31,7 +31,6 @@
 <!-- ═══ WELCOME SCREEN (after splash) ═══ -->
 <div id="welcome" aria-hidden="true">
   <div class="wc-inner">
-    <div class="wc-guest-top"><button class="wc-guest" type="button" onclick="enterApp()">Register &rarr;</button></div>
     <div class="wc-stage">
     <div class="wc-slides"><div class="wc-track" id="wcTrack">
       <div class="wc-slide">
@@ -104,8 +103,9 @@
           <label class="dt-label" for="loginPhoneInput">Mobile number <span class="dt-req">*</span></label>
           <div class="ph-row dt-phrow" id="loginPhRow">
             <span class="ph-cc lg-cc"><span class="cc-flag">🇺🇸</span><span class="cc-dial">+1</span></span>
-            <input id="loginPhoneInput" class="ph-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(555) 123-4567" maxlength="14" oninput="fmtPhone(this)" onkeydown="if(event.key==='Enter'){event.preventDefault();loginContinue();}">
+            <input id="loginPhoneInput" class="ph-input" type="tel" inputmode="numeric" autocomplete="tel" placeholder="(555) 123-4567" maxlength="14" oninput="fmtPhone(this);document.getElementById('loginPhErrMsg').style.display='none';" onkeydown="if(event.key==='Enter'){event.preventDefault();loginContinue();}">
           </div>
+          <div id="loginPhErrMsg" style="display:none;color:var(--coral);font-family:var(--font-ui);font-size:12.5px;margin:8px 0 0 4px">We don't recognize that number.</div>
         </div>
       </div>
     </div>
