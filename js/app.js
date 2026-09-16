@@ -4,6 +4,19 @@
    ═══════════════════════════════════════════════════════════ */
 
 /* ═══ NAV ═══ */
+/* Family/companion logins only follow Home, Progress & Rewards — Community and Help (SOS) stay locked */
+function isFamilyRole(){ return !!(window.__profile && window.__profile.role==='family'); }
+function applyRoleRestrictions(){
+  var fam=isFamilyRole();
+  document.querySelectorAll('.bottom-nav .nav-tab, #dnav .dn-item').forEach(function(t){
+    var oc=t.getAttribute('onclick')||'';
+    if(oc.indexOf("openOv('rooms')")>=0 || oc.indexOf('openSOS()')>=0){
+      t.classList.toggle('disabled', fam);
+      t.disabled=fam;
+      t.setAttribute('aria-disabled', fam?'true':'false');
+    }
+  });
+}
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -26,6 +39,7 @@ function goScreen(id){
   if(id==='tools' && typeof applyTodayActState==='function') applyTodayActState();   /* Managing Cravings card: check only once marked done */
 }
 function openOv(id){
+  if(id==='rooms' && isFamilyRole()) return;   /* Community is locked for the family-companion role */
   if(typeof stopPageAudio==='function')stopPageAudio();
   var el=document.getElementById('ov-'+id);if(!el)return;
   /* desktop: counter the page zoom so the fixed overlay covers the viewport at native scale */
@@ -1576,6 +1590,7 @@ function submitCompanion(){
   rhRegisterUser(window.__profile);   /* remember this number so a later log-in goes straight back to home */
   var rn=document.getElementById('rhName'); if(rn) rn.textContent=nameVal.split(' ')[0];
   hideCompanionScreen();
+  applyRoleRestrictions();
   if(typeof goScreen==='function') goScreen('home');
   if(typeof scheduleCheckin==='function') scheduleCheckin();
 }
@@ -1724,6 +1739,7 @@ function doneThenLocation(){ if(window.__doneTimer){ clearTimeout(window.__doneT
   setTimeout(showLocModal, 460);   /* location permission after the confirmation */
 }
 function scheduleCheckin(){ if(window.__checkinTimer) clearTimeout(window.__checkinTimer);
+  if(window.__suppressNextCheckin){ window.__suppressNextCheckin=false; return; }   /* one-time skip, e.g. right after sign-up */
   window.__checkinTimer=setTimeout(showCheckinModal, 2000); }   /* every time home is shown, after 2s */
 function showCheckinModal(){ var m=document.getElementById('checkinModal'); if(!m) return;
   if((document.body.getAttribute('data-screen')||'home')!=='home') return;   /* daily check-in prompt only on the home page */
@@ -2077,6 +2093,7 @@ function finishOnbFlow(){ setTimeout(function(){ showDoneModal(); if(window.__do
     sp.classList.add('hide'); sp.style.display='none';
     try{ var pf=JSON.parse(localStorage.getItem('rh_profile')||'null'); if(pf){ window.__profile=pf; if(pf.phone) window.__phone=pf.phone;
       var rn=document.getElementById('rhName'); if(rn && pf.name) rn.textContent=String(pf.name).split(' ')[0]; } }catch(e){}
+    applyRoleRestrictions();
     var last=null; try{ last=localStorage.getItem('rh_screen'); }catch(e){}
     /* read the last overlay BEFORE goScreen — goScreen now closes overlays and clears rh_ov */
     var lastOv=null; try{ lastOv=localStorage.getItem('rh_ov'); }catch(e){}
@@ -2208,16 +2225,19 @@ function verifyOtp(){
     hideOtpScreen();
     hideLoginScreen();             /* if we came from the login screen */
     hideDetailsScreen();           /* reveal the home dashboard behind */
+    applyRoleRestrictions();
     if(typeof goScreen==='function') goScreen('home');
     scheduleCheckin();             /* daily check-in prompt 2s after landing on home */
     return;
   }
-  /* new user: details were already collected before OTP → go straight to the onboarding steps */
+  /* new user: details were already collected before OTP → straight to home (relief/care-team/privacy steps removed) */
   try{ localStorage.setItem('rh_onboarded','1'); if(window.__profile) localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); }catch(e){}
   if(window.__profile) rhRegisterUser(window.__profile);   /* remember the verified number now so a later log-in goes straight to OTP */
-  onbShow('reliefScreen');
   hideOtpScreen();
   hideDetailsScreen();
+  applyRoleRestrictions();
+  window.__suppressNextCheckin=true;   /* don't interrupt right after sign-up with the daily check-in popup */
+  if(typeof goScreen==='function') goScreen('home');
 }
 function resendOtp(){
   var btn=document.getElementById('otpResend'); if(btn && btn.disabled) return;   /* still counting down */
@@ -2311,6 +2331,7 @@ function openProfileFull(){
 function pfBack(){ goScreen(window.__pfBackTo||'home'); }
 /* Full-page SOS with back arrow (no top/bottom bars) */
 function openSOS(){
+  if(isFamilyRole()) return;   /* Help/SOS is locked for the family-companion role */
   try{ window.__sosBackTo=document.body.getAttribute('data-screen')||'home'; }catch(e){ window.__sosBackTo='home'; }
   if(window.__sosBackTo==='narcan') window.__sosBackTo='home';
   goScreen('narcan');
