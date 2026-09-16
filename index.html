@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260916a">
+<link rel="stylesheet" href="css/styles.css?v=20260916b">
 </head>
 <body>
 
@@ -496,8 +496,6 @@
   <div class="dn-brand"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
   <nav class="dn-list">
     <button class="dn-item active" data-screen="home" onclick="goScreen('home')"><i data-lucide="house"></i><span>Home</span></button>
-    <button class="dn-item" onclick="openOv('rooms')"><i data-lucide="users-round"></i><span>Community</span></button>
-    <button class="dn-item dn-sos" data-screen="narcan" onclick="openSOS()" aria-label="Help"><svg class="sos-cross" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="9.4" y="4" width="5.2" height="16" rx="2.6"/><rect x="4" y="9.4" width="16" height="5.2" rx="2.6"/></svg><span>Help</span></button>
     <button class="dn-item" data-screen="mat" onclick="goScreen('mat')"><i data-lucide="trending-up"></i><span>Progress</span></button>
     <button class="dn-item" data-screen="rewards" onclick="goScreen('rewards')"><i data-lucide="trophy"></i><span>Rewards</span></button>
     <button class="dn-item" data-screen="appointments" onclick="goScreen('appointments')"><i data-lucide="calendar"></i><span>Appointments</span></button>
@@ -3253,8 +3251,6 @@
 
   <div class="bottom-nav" id="bottomNav">
     <button class="nav-tab active" onclick="goScreen('home')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.8 20.2 10.2 20.2 20.2 14 20.2 14 14 10 14 10 20.2 3.8 20.2 3.8 10.2Z"/></svg></span><div class="nav-label">Home</div></button>
-    <button class="nav-tab" onclick="openOv('rooms')"><span class="nav-icon"><i data-lucide="users-round"></i></span><div class="nav-label">Community</div></button>
-    <button class="nav-tab nav-sos" onclick="openSOS()" aria-label="Help"><span class="nav-icon"><svg class="sos-cross" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="9.4" y="4" width="5.2" height="16" rx="2.6"/><rect x="4" y="9.4" width="16" height="5.2" rx="2.6"/></svg><span class="sos-help">HELP</span></span></button>
     <button class="nav-tab" onclick="goScreen('mat')"><span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"><rect x="3.5" y="13.5" width="4" height="7" rx="2"/><rect x="10" y="8.5" width="4" height="12" rx="2"/><rect x="16.5" y="4" width="4" height="16.5" rx="2"/></svg></span><div class="nav-label">Progress</div></button>
     <button class="nav-tab" onclick="goScreen('rewards')"><span class="nav-icon"><i data-lucide="trophy"></i></span><div class="nav-label">Rewards</div></button>
   </div>
@@ -3969,6 +3965,6 @@
     <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
   </div>
 </div>
-<script src="js/app.js?v=20260916a"></script>
+<script src="js/app.js?v=20260916b"></script>
 </body>
 </html>

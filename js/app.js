@@ -4,19 +4,9 @@
    ═══════════════════════════════════════════════════════════ */
 
 /* ═══ NAV ═══ */
-/* Family/companion logins only follow Home, Progress & Rewards — Community and Help (SOS) stay locked */
+/* Community and Help (SOS) have been removed from the app entirely — see openOv()/openSOS() guards below */
 function isFamilyRole(){ return !!(window.__profile && window.__profile.role==='family'); }
-function applyRoleRestrictions(){
-  var fam=isFamilyRole();
-  document.querySelectorAll('.bottom-nav .nav-tab, #dnav .dn-item').forEach(function(t){
-    var oc=t.getAttribute('onclick')||'';
-    if(oc.indexOf("openOv('rooms')")>=0 || oc.indexOf('openSOS()')>=0){
-      t.classList.toggle('disabled', fam);
-      t.disabled=fam;
-      t.setAttribute('aria-disabled', fam?'true':'false');
-    }
-  });
-}
+function applyRoleRestrictions(){ /* reserved for future role-based nav restrictions */ }
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -39,7 +29,7 @@ function goScreen(id){
   if(id==='tools' && typeof applyTodayActState==='function') applyTodayActState();   /* Managing Cravings card: check only once marked done */
 }
 function openOv(id){
-  if(id==='rooms' && isFamilyRole()) return;   /* Community is locked for the family-companion role */
+  if(id==='rooms') return;   /* Community has been removed from the app */
   if(typeof stopPageAudio==='function')stopPageAudio();
   var el=document.getElementById('ov-'+id);if(!el)return;
   /* desktop: counter the page zoom so the fixed overlay covers the viewport at native scale */
@@ -2330,7 +2320,7 @@ function openProfileFull(){
 function pfBack(){ goScreen(window.__pfBackTo||'home'); }
 /* Full-page SOS with back arrow (no top/bottom bars) */
 function openSOS(){
-  if(isFamilyRole()) return;   /* Help/SOS is locked for the family-companion role */
+  return;   /* Help/SOS has been removed from the app */
   try{ window.__sosBackTo=document.body.getAttribute('data-screen')||'home'; }catch(e){ window.__sosBackTo='home'; }
   if(window.__sosBackTo==='narcan') window.__sosBackTo='home';
   goScreen('narcan');
