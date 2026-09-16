@@ -2215,6 +2215,10 @@ function verifyOtp(){
   }
   var existing=rhGetUser(window.__phone);
   if(existing){                     /* returning number -> straight to home, skip onboarding */
+    if(window.__phone===RH_FAMILY_LINK.phone && existing.role!=='family'){   /* repair a stale/pre-family cached account for the linked number */
+      existing=Object.assign({}, existing, { role:'family', linkedPatient:RH_FAMILY_LINK.patientName, relationship: existing.relationship||'parent' });
+      rhRegisterUser(existing);
+    }
     window.__profile=existing;
     try{ localStorage.setItem('rh_profile', JSON.stringify(existing)); localStorage.setItem('rh_onboarded','1'); }catch(e){}
     var rn=document.getElementById('rhName'); if(rn && existing.name) rn.textContent=String(existing.name).split(' ')[0];
