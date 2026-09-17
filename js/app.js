@@ -1566,7 +1566,11 @@ function loginContinue(){
 }
 /* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */
 var RH_FAMILY_LINK={ phone:'+15625550193', patientName:'John David', memberName:'Sarah M.' };   /* demo: Mom's number from the patient's own contacts already links here */
-var RH_FAMILY_PATIENTS=[{ name:'John David', relation:'parent', relationLabel:'Parent' }];   /* patients this linked number is a family member of */
+var RH_FAMILY_PATIENTS=[   /* patients this linked number is a family member of */
+  { name:'John David', relation:'parent', relationLabel:'Parent' },
+  { name:'Maria Alvarez', relation:'sibling', relationLabel:'Sibling' },
+  { name:'Robert Chen', relation:'friend', relationLabel:'Friend' }
+];
 function cpRenderPatients(filter){
   var box=document.getElementById('cpPatientList'); if(!box) return;
   var q=(filter||'').trim().toLowerCase();
@@ -1578,28 +1582,45 @@ function cpRenderPatients(filter){
   }).join('');
 }
 function cpFilterPatients(){ var i=document.getElementById('cpPatientSearch'); cpRenderPatients(i?i.value:''); }
+function cpSyncHero(p){
+  var pn=document.getElementById('cpPatientName'); if(pn) pn.textContent=p?p.name:'a patient';
+  var pf=document.getElementById('cpPatientFirst'); if(pf) pf.textContent=p?p.name.split(' ')[0]:'their';
+}
 function cpSelectPatient(btn){
   var name=btn.getAttribute('data-name');
   var p=RH_FAMILY_PATIENTS.filter(function(x){ return x.name===name; })[0]; if(!p) return;
   window.__cpSelectedPatient=p;
   document.querySelectorAll('.cp-patient-row').forEach(function(r){ r.classList.toggle('sel', r===btn); });
   var f=document.getElementById('cpRelField'); if(f) f.classList.remove('err');
+  cpSyncHero(p);
+  cpPersistPending();
 }
-function showCompanionScreen(){
+function cpPersistPending(){
+  try{ localStorage.setItem('rh_pending_companion', JSON.stringify({
+    phone: window.__phone,
+    name: (document.getElementById('cpName')||{}).value||'',
+    patientName: window.__cpSelectedPatient?window.__cpSelectedPatient.name:''
+  })); }catch(e){}
+}
+function showCompanionScreen(resume){
   var s=document.getElementById('companionScreen'); if(!s) return;
-  var pn=document.getElementById('cpPatientName'); if(pn) pn.textContent=RH_FAMILY_LINK.patientName;
-  var pf=document.getElementById('cpPatientFirst'); if(pf) pf.textContent=RH_FAMILY_LINK.patientName.split(' ')[0];
-  var nm=document.getElementById('cpName'); if(nm) nm.value=(window.__phone===RH_FAMILY_LINK.phone ? RH_FAMILY_LINK.memberName : '');   /* autofilled only when we already know who this number belongs to */
+  var pending=null; if(resume){ try{ pending=JSON.parse(localStorage.getItem('rh_pending_companion')||'null'); }catch(e){} }
+  var nm=document.getElementById('cpName');
+  if(nm) nm.value=(pending&&pending.name) ? pending.name : (window.__phone===RH_FAMILY_LINK.phone ? RH_FAMILY_LINK.memberName : '');   /* resume what was typed, else autofill only when we already know who this number belongs to */
   var si=document.getElementById('cpPatientSearch'); if(si) si.value='';
-  window.__cpSelectedPatient=RH_FAMILY_PATIENTS.length===1?RH_FAMILY_PATIENTS[0]:null;   /* auto-select when there's only one patient to pick from */
+  var pendingPatient=pending&&pending.patientName ? RH_FAMILY_PATIENTS.filter(function(p){return p.name===pending.patientName;})[0] : null;
+  window.__cpSelectedPatient=pendingPatient||RH_FAMILY_PATIENTS[0]||null;   /* default to the first match; the list stays open to pick another */
+  cpSyncHero(window.__cpSelectedPatient);
   cpRenderPatients('');
   s.style.display=''; s.classList.remove('hide'); s.classList.add('show');
+  cpPersistPending();
 }
 function hideCompanionScreen(){
   var s=document.getElementById('companionScreen'); if(!s) return;
   s.classList.add('hide'); setTimeout(function(){ s.style.display='none'; s.classList.remove('show','hide'); }, 420);
 }
 function companionBack(){
+  try{ localStorage.removeItem('rh_pending_companion'); }catch(e){}
   hideCompanionScreen();
   var w=document.getElementById('welcome'); if(w){ w.style.display=''; w.classList.remove('hide'); w.classList.add('show'); }
   if(window.__wc && __wc.start) __wc.start();
@@ -1611,7 +1632,7 @@ function submitCompanion(){
   var patient=window.__cpSelectedPatient;
   if(!patient){ dtErr('cpRelField'); return; }
   window.__profile={ name:nameVal, role:'family', relationship:patient.relation, linkedPatient:patient.name, phone:window.__phone };
-  try{ localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); localStorage.setItem('rh_onboarded','1'); }catch(e){}
+  try{ localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); localStorage.setItem('rh_onboarded','1'); localStorage.removeItem('rh_pending_companion'); }catch(e){}
   rhRegisterUser(window.__profile);   /* remember this number so a later log-in goes straight back to home */
   var rn=document.getElementById('rhName'); if(rn) rn.textContent=nameVal.split(' ')[0];
   hideCompanionScreen();
@@ -2173,6 +2194,15 @@ function finishOnbFlow(){ setTimeout(function(){ showDoneModal(); if(window.__do
     }
     /* first-run feature tour — watchdog fires it once the user is on a clean home screen */
     if(typeof startTourWatchdog==='function') startTourWatchdog();
+    return;
+  }
+  /* mid-signup family/companion form — resume it straight away instead of restarting from the welcome screen */
+  var pending=null; try{ pending=JSON.parse(localStorage.getItem('rh_pending_companion')||'null'); }catch(e){}
+  if(pending && pending.phone){
+    sp.classList.add('hide'); sp.style.display='none';
+    window.__phone=pending.phone;
+    window.__familyLogin=true;
+    if(typeof showCompanionScreen==='function') showCompanionScreen(true);
     return;
   }
   /* new user — run the full flow: splash -> intro -> mobile number -> OTP -> details -> location -> home */

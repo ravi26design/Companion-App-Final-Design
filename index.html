@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260917f">
+<link rel="stylesheet" href="css/styles.css?v=20260917g">
 </head>
 <body>
 
@@ -124,7 +124,7 @@
       <div class="dt-fields">
         <div class="dt-field" id="cpNameField">
           <label class="dt-label" for="cpName">Your name <span class="dt-req">*</span></label>
-          <input id="cpName" class="dt-input" type="text" placeholder="Your name" autocomplete="name">
+          <input id="cpName" class="dt-input" type="text" placeholder="Your name" autocomplete="name" oninput="cpPersistPending()">
         </div>
         <div class="dt-field" id="cpRelField">
           <label class="dt-label">Your patients <span class="dt-req">*</span></label>
@@ -3989,6 +3989,6 @@
     <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
   </div>
 </div>
-<script src="js/app.js?v=20260917f"></script>
+<script src="js/app.js?v=20260917g"></script>
 </body>
 </html>
