@@ -10,6 +10,7 @@ function applyRoleRestrictions(){
   var fam=isFamilyRole();
   var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
   var cta=document.getElementById('famRewardCta'); if(cta) cta.style.display=(fam?'':'none');   /* only a family/companion login gets to pledge a reward */
+  var pz=document.getElementById('prizesSection'); if(pz) pz.style.display=(fam?'none':'');   /* "Prizes I'd value" is the patient's own wishlist — hidden for family/companion logins */
 }
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
@@ -1805,6 +1806,7 @@ function toggleLeaderboardPref(){
   applyLeaderboardPref();
 }
 /* ═══ Prizes I'd value — personal reward wishlist ═══ */
+var RH_COMMON_PRIZES=['Movie night','Dinner out','A new book','Concert tickets','New clothes','Video game','Coffee treat','Weekend trip','Spa day'];
 function wishGet(){ try{ return JSON.parse(localStorage.getItem('rh_wishlist')||'[]'); }catch(e){ return []; } }
 function wishSave(a){ try{ localStorage.setItem('rh_wishlist', JSON.stringify(a)); }catch(e){} }
 function wishEsc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
@@ -1822,9 +1824,9 @@ function openGiveRewardSheet(){
   var s=document.getElementById('giveRewardSheet'); if(!s) return;
   var ri=document.getElementById('giveRewardInput'), ci=document.getElementById('giveRewardCond');
   if(ri) ri.value=''; if(ci) ci.value='';
-  var pn=document.getElementById('giveRewardPatientName'); if(pn) pn.textContent=(RH_FAMILY_LINK.patientName||'their').split(' ')[0]+"'s";
   var wrap=document.getElementById('giveRewardWishWrap'), chips=document.getElementById('giveRewardWishChips');
-  var items=wishGet();
+  var mine=wishGet();
+  var items=mine.concat(RH_COMMON_PRIZES.filter(function(x){ return mine.map(function(m){return m.toLowerCase();}).indexOf(x.toLowerCase())<0; }));
   if(chips){
     chips.innerHTML=items.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
   }
