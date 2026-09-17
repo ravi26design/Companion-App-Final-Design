@@ -93,10 +93,10 @@ function matchSheetToContentWidth(sheetEl){
   if(!sheetEl) return;
   var card=sheetEl.querySelector('.aps-sheet, .pf-sheet'); if(!card) return;
   if(document.body.classList.contains('is-desktop')){
-    var ref=document.querySelector('.screen.active .scr-full') || document.querySelector('.screen.active .scr-card');   /* an actual content card — the truest match for "same width as the cards" (.scr-full on the 2-col screens, plain .scr-card on single-column ones like Profile) */
+    var refs=document.querySelectorAll('.screen.active .scr-full, .screen.active .scr-card');   /* actual content cards — the truest match for "same width as the cards" (.scr-full on the 2-col screens, plain .scr-card on single-column ones like Profile) */
     var w=0;
-    if(ref){ w=ref.getBoundingClientRect().width; }
-    else{
+    for(var ri=0; ri<refs.length; ri++){ var rw=refs[ri].getBoundingClientRect().width; if(rw>0){ w=rw; break; } }   /* skip any that are hidden/collapsed (0-width) rather than trusting the first DOM match */
+    if(!w){
       var scr=document.querySelector('.screen.active');
       if(scr){ var cs=getComputedStyle(scr); w=scr.getBoundingClientRect().width - parseFloat(cs.paddingLeft||0) - parseFloat(cs.paddingRight||0); }
     }
