@@ -72,7 +72,6 @@ function goScreen(id){
   if(id==='rewards' && typeof renderWish==='function') renderWish();   /* prizes wishlist */
   if(id==='rewards' && typeof applyLeaderboardPref==='function') applyLeaderboardPref();   /* leaderboard visibility */
   if(id==='home' && typeof scheduleCheckin==='function') scheduleCheckin();   /* daily check-in prompt 2s after landing on home */
-  if(id==='home' && typeof maybeStartTour==='function') setTimeout(function(){ if(!document.querySelector('.overlay.active') && (document.body.getAttribute('data-screen')||'')==='home') maybeStartTour(); }, 650);   /* first-run feature tour on a clear home */
   if(id==='profile' && typeof renderProfileLists==='function') renderProfileLists();   /* triggers / relief / contacts */
   if(id==='tools' && typeof actzPaintTiles==='function') actzPaintTiles();   /* mark completed activities */
   if(id==='tools' && typeof applyRecState==='function') applyRecState();   /* Today's Activity done-state */
@@ -1599,7 +1598,6 @@ function loginAsGuest(){
   if(w){ w.classList.add('hide'); setTimeout(function(){ w.style.display='none'; }, 420); }
   if(typeof goScreen==='function') goScreen('home');
   if(typeof scheduleCheckin==='function') scheduleCheckin();
-  if(typeof startTourWatchdog==='function') startTourWatchdog();   /* first-run feature tour for guests too */
 }
 /* ═══ LOGIN (returning user): number → OTP if registered, else Register with the number prefilled ═══ */
 function showLoginScreen(){ var s=document.getElementById('loginScreen'); if(s){ s.style.display=''; s.classList.remove('hide'); s.classList.add('show'); } }
@@ -1853,10 +1851,7 @@ function doneThenLocation(){ if(window.__doneTimer){ clearTimeout(window.__doneT
 function scheduleCheckin(){ if(window.__checkinTimer) clearTimeout(window.__checkinTimer); }   /* Daily Check-In popup removed — no longer auto-prompts */
 function showCheckinModal(){ var m=document.getElementById('checkinModal'); if(!m) return;
   if((document.body.getAttribute('data-screen')||'home')!=='home') return;   /* daily check-in prompt only on the home page */
-  if(window.__tourActive) return;                                            /* don't interrupt the first-run tour */
-  if(typeof maybeStartTour==='function' && maybeStartTour()) return;         /* first run: show the feature tour instead */
   m.classList.remove('hide'); m.classList.add('show'); if(window.lucide&&lucide.createIcons) lucide.createIcons(); }
-/* ═══ FIRST-RUN FEATURE TOUR (coach marks; shown once, then never again) ═══ */
 /* ═══ Listen-to-page audio narration (Web Speech API, no backend) ═══ */
 var PAGE_NARRATION={
   home:"Welcome to your home dashboard. Here you'll find your Recovery Health score, your plan for today, and quick actions. Check off your medication, reflections and activities to earn points.",
@@ -2068,117 +2063,6 @@ function speakPage(){
   u.onerror=u.onend;
   try{ window.speechSynthesis.cancel(); window.speechSynthesis.speak(u); }catch(e){}
 }
-var TOUR_STEPS=[
-  {sel:'.rh-card', icon:'activity', color:'#5E8B6E', title:'Recovery Health', text:'Your daily score of how recovery is going. Tap it any time for a deeper look at your progress.'},
-  {sel:'#screen-home .rt-section', icon:'list-checks', color:'#C9973B', title:'Your daily plan', text:'Meds, a quick reflection, insights and connecting live here — and each one earns you XP.'},
-  {sel:'.bottom-nav [onclick*="\'home\'"]', icon:'home', color:'#5E8B6E', title:'Home', text:'Your daily dashboard — recovery score, plan and quick actions, all in one place.'},
-  {sel:'.bottom-nav [onclick*="rooms"]', icon:'users-round', color:'#4E7FA8', title:'Community', text:'Connect with people who get it. Share and get support — always anonymous.'},
-  {sel:'.nav-sos', icon:'life-buoy', color:'#C56A5E', title:'Help, anytime', text:'Struggling right now? Tap HELP to reach real, caring support — fast.'},
-  {sel:'.bottom-nav [onclick*="mat"]', icon:'bar-chart-3', color:'#8A6FB0', title:'Progress', text:'See your recovery trends, medication and health charts over time.'},
-  {sel:'.bottom-nav [onclick*="rewards"]', icon:'trophy', color:'#C9973B', title:'Rewards', text:'Earn XP and unlock rewards as you build healthy streaks and reach milestones.'},
-  {sel:'.avatar-btn', icon:'user-round', color:'#6E9E80', title:'Your profile', text:'Your meds, people, care team and settings — all editable in one place.'},
-  {sel:'.notif-btn', icon:'map-pin', color:'#C56A5E', title:'Quick check-in', text:'Share a location check-in with your support circle in a single tap.'}
-];
-var __tourVis=[], __tourPos=0;
-function tourRect(i){ var s=TOUR_STEPS[i]; if(!s) return null; var el=document.querySelector(s.sel); if(!el) return null;
-  var r=el.getBoundingClientRect(); if(r.width<2||r.height<2) return null; return r; }
-function maybeStartTour(){
-  if(window.__tourActive) return false;
-  try{ if(localStorage.getItem('rh_tour_seen_v2')==='1') return false; }catch(e){}
-  var t=document.getElementById('appTour'); if(!t) return false;
-  window.__tourActive=true;
-  var dots=document.getElementById('tourDots');
-  if(dots){ var h=''; for(var k=0;k<TOUR_STEPS.length;k++) h+='<span></span>'; dots.innerHTML=h; }
-  t.classList.add('on'); t.setAttribute('aria-hidden','false');
-  window.addEventListener('resize', tourReposition);
-  __tourPos=0; renderTour();
-  return true;   /* always shows — no dependency on which elements happen to be on screen */
-}
-function renderTour(){
-  if(__tourPos>=TOUR_STEPS.length){ tourDone(); return; }
-  var s=TOUR_STEPS[__tourPos];
-  var tourEl=document.getElementById('appTour'); if(tourEl) tourEl.style.setProperty('--tour-accent', s.color);   /* accent drives the bubble, beak & ring */
-  var illus=document.getElementById('tourIllus');
-  if(illus){ illus.style.background='color-mix(in srgb, '+s.color+' 15%, #fff)'; illus.style.color=s.color; illus.innerHTML='<i data-lucide="'+s.icon+'"></i>'; }
-  var stepEl=document.getElementById('tourStep'); if(stepEl) stepEl.textContent=(__tourPos+1)+' / '+TOUR_STEPS.length;
-  var titleEl=document.getElementById('tourTitle'); if(titleEl){ titleEl.textContent=s.title; titleEl.style.color='#fff'; }
-  var textEl=document.getElementById('tourText'); if(textEl) textEl.textContent=s.text;
-  var ds=document.querySelectorAll('#tourDots span'); for(var d=0;d<ds.length;d++){ var on=(d===__tourPos); ds[d].classList.toggle('on',on); ds[d].style.background=on?s.color:''; }
-  var nb=document.getElementById('tourNext'); if(nb){ nb.textContent=(__tourPos>=TOUR_STEPS.length-1)?'Finish':'Next'; nb.style.background='#fff'; nb.style.color=s.color; }
-  /* spotlight the live element if it's on screen (mobile); otherwise dim + centre the card (desktop) */
-  var r=tourRect(__tourPos), spot=document.getElementById('tourSpot'), tour=document.getElementById('appTour');
-  var card=document.getElementById('tourCard');
-  if(r){
-    var dia=Math.max(r.width,r.height)+18, cx=r.left+r.width/2, cy=r.top+r.height/2;
-    if(spot){ spot.style.display='block'; spot.style.left=(cx-dia/2)+'px'; spot.style.top=(cy-dia/2)+'px'; spot.style.width=dia+'px'; spot.style.height=dia+'px'; spot.style.borderRadius='50%'; }
-    if(tour) tour.classList.remove('centered');
-    positionTourCard(r);
-  } else {
-    if(spot) spot.style.display='none';
-    if(tour) tour.classList.add('centered');
-    if(card){ card.classList.remove('above','below'); }
-  }
-  if(window.lucide&&lucide.createIcons) lucide.createIcons();
-  if(!r && card){ var cw=card.offsetWidth, ch=card.offsetHeight; card.style.left=Math.max(14,(window.innerWidth-cw)/2)+'px'; card.style.top=Math.max(14,(window.innerHeight-ch)/2)+'px'; }
-  if(card){ card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop'); }
-}
-function positionTourCard(r){
-  var card=document.getElementById('tourCard'); if(!card) return;
-  var vw=window.innerWidth, vh=window.innerHeight, gap=20, m=14;
-  var cw=card.offsetWidth, ch=card.offsetHeight;
-  var below=(r.bottom+gap+ch) <= (vh-m);   /* room below the target? (header icons) else place above (nav) */
-  var top=below ? (r.bottom+gap) : (r.top-gap-ch);
-  var left=Math.min(Math.max(m, r.left+r.width/2 - cw/2), vw-cw-m);
-  card.classList.toggle('below', below); card.classList.toggle('above', !below);
-  card.style.left=left+'px'; card.style.top=Math.max(m, top)+'px';
-  card.style.setProperty('--beak', Math.min(Math.max(16, (r.left+r.width/2)-left-9), cw-34)+'px');
-}
-function tourNext(){ __tourPos++; renderTour(); }
-function tourSkip(){ tourDone(); }
-function tourBackdrop(e){ if(e&&e.target&&e.target.id==='appTour') tourNext(); }
-function tourReposition(){ if(window.__tourActive) renderTour(); }
-function tourDone(){
-  try{ localStorage.setItem('rh_tour_seen_v2','1'); }catch(e){}
-  if(window.__tourWD){ clearInterval(window.__tourWD); window.__tourWD=null; }
-  var t=document.getElementById('appTour'); if(t){ t.classList.remove('on'); t.setAttribute('aria-hidden','true'); }
-  window.removeEventListener('resize', tourReposition);
-  window.__tourActive=false;
-  if(typeof scheduleCheckin==='function') scheduleCheckin();   /* resume the daily check-in after the tour */
-}
-/* is a welcome/onboarding screen or a post-onboarding modal currently covering home? */
-function tourBlockingUiOpen(){
-  var ids=['welcome','splash','detailsScreen','otpScreen','loginScreen'];
-  for(var i=0;i<ids.length;i++){ var e=document.getElementById(ids[i]);
-    if(e && e.classList.contains('show') && getComputedStyle(e).display!=='none') return true; }
-  var mods=['doneModal','locModal','checkinModal'];
-  for(var j=0;j<mods.length;j++){ var m=document.getElementById(mods[j]); if(m && m.classList.contains('show')) return true; }
-  return false;
-}
-/* Watchdog: keep checking until the user is on a clean home screen, then fire the guide once.
-   Robust against onboarding modals, restored overlays, and timing quirks. */
-function startTourWatchdog(){
-  try{ if(localStorage.getItem('rh_tour_seen_v2')==='1') return; }catch(e){}
-  if(window.__tourWD) return;
-  var tries=0;
-  window.__tourWD=setInterval(function(){
-    tries++;
-    var seen=false; try{ seen=localStorage.getItem('rh_tour_seen_v2')==='1'; }catch(e){}
-    if(seen || tries>90){ clearInterval(window.__tourWD); window.__tourWD=null; return; }
-    if(window.__tourActive) return;
-    if(document.querySelector('.overlay.active')) return;
-    if((document.body.getAttribute('data-screen')||'')!=='home') return;
-    if(tourBlockingUiOpen()) return;
-    if(maybeStartTour()){ clearInterval(window.__tourWD); window.__tourWD=null; }
-  }, 700);
-}
-/* Manual replay (from Profile) — clears the seen flag and starts fresh on home */
-function replayTour(){
-  try{ localStorage.removeItem('rh_tour_seen_v2'); }catch(e){}
-  window.__tourActive=false;
-  if(typeof closeOv==='function') closeOv();
-  if(typeof goScreen==='function') goScreen('home');
-  setTimeout(function(){ if(typeof maybeStartTour==='function') maybeStartTour(); }, 450);
-}
 function hideCheckinModal(){ if(window.__checkinTimer){ clearTimeout(window.__checkinTimer); window.__checkinTimer=null; }
   var m=document.getElementById('checkinModal'); if(!m) return;
   m.classList.add('hide'); setTimeout(function(){ m.classList.remove('show','hide'); m.style.display='none'; }, 340); }
@@ -2205,8 +2089,7 @@ function ciCancel(){ window.__ciMode=false; onbHide('triggersScreen'); onbHide('
 /* ═══ LOCATION PERMISSION ═══ */
 function showLocModal(){ var m=document.getElementById('locModal'); if(m) m.classList.add('show'); }
 function hideLocModal(){ var m=document.getElementById('locModal'); if(!m) return;
-  m.classList.add('hide'); setTimeout(function(){ m.style.display='none'; }, 320);
-  if(typeof startTourWatchdog==='function') startTourWatchdog();   /* first-run feature tour once onboarding ends */ }
+  m.classList.add('hide'); setTimeout(function(){ m.style.display='none'; }, 320); }
 function allowLocation(){
   hideLocModal();
   /* trigger the real browser/system location prompt */
@@ -2260,8 +2143,6 @@ function finishOnbFlow(){ setTimeout(function(){ showDoneModal(); if(window.__do
         openOv(lastOv);
       }
     }
-    /* first-run feature tour — watchdog fires it once the user is on a clean home screen */
-    if(typeof startTourWatchdog==='function') startTourWatchdog();
     return;
   }
   /* mid-signup family/companion form — resume it straight away instead of restarting from the welcome screen */

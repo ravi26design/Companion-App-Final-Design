@@ -1262,11 +1262,6 @@
           <div class="pf-menu-t">Privacy &amp; Data Sharing</div>
           <i data-lucide="chevron-right" class="pf-menu-arrow"></i>
         </button>
-        <button class="pf-menu-row" type="button" onclick="replayTour()">
-          <div class="pf-menu-ic" style="background:#6DA0CC;color:#fff"><i data-lucide="sparkles"></i></div>
-          <div class="pf-menu-t">Feature guide</div>
-          <i data-lucide="chevron-right" class="pf-menu-arrow"></i>
-        </button>
         <button class="pf-menu-row pf-menu-logout" type="button" onclick="logout()">
           <div class="pf-menu-ic" style="background:#C4453A;color:#fff"><i data-lucide="log-out"></i></div>
           <div class="pf-menu-t">Log out</div>
@@ -3980,29 +3975,6 @@
   </div>
 </div>
 
-<!-- ═══ FIRST-RUN FEATURE TOUR (spotlight coach marks) ═══ -->
-<div id="appTour" aria-hidden="true">
-  <div class="tour-spot" id="tourSpot"></div>
-  <div class="tour-card" id="tourCard">
-    <button class="tour-x" type="button" aria-label="Skip guide" onclick="tourSkip()">&times;</button>
-    <span class="tour-beak" id="tourBeak"></span>
-    <div class="tour-row">
-      <span class="tour-ic" id="tourIllus"></span>
-      <div class="tour-txt">
-        <div class="tour-title" id="tourTitle"></div>
-        <div class="tour-desc" id="tourText"></div>
-      </div>
-    </div>
-    <div class="tour-foot">
-      <span class="tour-step" id="tourStep"></span>
-      <button class="tour-got" id="tourNext" type="button" onclick="tourNext()">Next</button>
-    </div>
-  </div>
-  <div class="tour-bar">
-    <div class="tour-dots" id="tourDots"></div>
-    <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
-  </div>
-</div>
 <script src="js/app.js?v=20260919a"></script>
 </body>
 </html>
