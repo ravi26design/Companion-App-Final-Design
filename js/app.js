@@ -13,15 +13,19 @@ function applyRoleRestrictions(){
   var pz=document.getElementById('prizesSection'); if(pz) pz.style.display=(fam?'none':'');   /* "Prizes I'd value" is the patient's own wishlist — hidden for family/companion logins */
   var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
   var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
+  var patients=document.getElementById('pfPatientsSection'); if(patients) patients.style.display=(fam?'':'none');   /* patient switcher — family/companion logins only */
+  if(fam && typeof pfRenderPatientSwitcher==='function') pfRenderPatientSwitcher();
+  if(typeof applyPatientHomeStats==='function') applyPatientHomeStats();   /* Home's Recovery Health score/trend/focus for whichever patient is selected */
   var av=document.getElementById('pfHeroAv'), nm=document.getElementById('pfHeroName'), meta=document.getElementById('pfHeroMeta'), tags=document.getElementById('pfHeroTags');
   if(fam){   /* My Profile shows the family member's own identity, not the patient's */
     var fname=(window.__profile&&window.__profile.name)||'Family Member';
     var initials=fname.trim().split(/\s+/).map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase()||'FM';
     var rel=(window.__profile&&window.__profile.relationship)||'family';
     var relLabel=rel.charAt(0).toUpperCase()+rel.slice(1).replace(/-/g,' ');
+    var patientName=(window.__profile&&window.__profile.linkedPatient)||RH_FAMILY_LINK.patientName||'the patient';
     if(av) av.textContent=initials;
     if(nm) nm.textContent=fname;
-    if(meta) meta.textContent=relLabel+' of '+(RH_FAMILY_LINK.patientName||'the patient');
+    if(meta) meta.textContent=relLabel+' of '+patientName;
     if(tags) tags.style.display='none';
   } else {
     if(av) av.textContent='AM';
@@ -29,6 +33,26 @@ function applyRoleRestrictions(){
     if(meta) meta.textContent='Clean since January 15, 2026';
     if(tags) tags.style.display='';
   }
+}
+/* Patient switcher on My Profile — a family/companion login can follow more than one patient */
+function pfRenderPatientSwitcher(){
+  var box=document.getElementById('pfPatientList'); if(!box) return;
+  var current=(window.__profile&&window.__profile.linkedPatient)||'';
+  box.innerHTML=RH_FAMILY_PATIENTS.map(function(p){
+    var sel=p.name===current;
+    return '<button type="button" class="cp-patient-row'+(sel?' sel':'')+'" data-name="'+wishEsc(p.name)+'" onclick="pfSwitchPatient(this)"><span class="cp-patient-name">'+wishEsc(p.name)+'</span><span class="cp-patient-rel">'+(sel?'Following':wishEsc(p.relationLabel))+'</span></button>';
+  }).join('');
+}
+function pfSwitchPatient(btn){
+  var name=btn.getAttribute('data-name');
+  var p=RH_FAMILY_PATIENTS.filter(function(x){ return x.name===name; })[0]; if(!p) return;
+  if(!window.__profile) window.__profile={};
+  window.__profile.linkedPatient=p.name;
+  window.__profile.relationship=p.relation;
+  try{ localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); }catch(e){}
+  rhRegisterUser(window.__profile);
+  applyRoleRestrictions();
+  if(typeof toast==='function') toast("You're now following "+p.name+".");
 }
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
@@ -984,10 +1008,10 @@ function startBreath(){
 function stopBreath(){ if(breathTimer){ clearTimeout(breathTimer); breathTimer=null; } }
 
 /* ═══ Recovery Health — segmented fan gauge ═══ */
-function buildHealthGauge(){
+function buildHealthGauge(val, force){
   var el=document.getElementById('healthGauge'); if(!el) return;
-  if(el.querySelector('.speedo')) return;        /* build once */
-  var val=74;
+  if(el.querySelector('.speedo')){ if(!force) return; el.innerHTML=''; }   /* build once, unless a patient switch forces a redraw */
+  val=(typeof val==='number')?val:74;
   var cx=150, cy=158, r=112, sw=22;
   function pt(deg){ var a=deg*Math.PI/180; return [(cx+r*Math.cos(a)).toFixed(1),(cy-r*Math.sin(a)).toFixed(1)]; }
   function arc(d1,d2,col){ var p1=pt(d1),p2=pt(d2);
@@ -1016,6 +1040,20 @@ function buildHealthGauge(){
   var num=card.querySelector('.rh-num b');
   if(num){ if(reduce){ num.textContent=val; } else { num.textContent='0'; rhCountUp(num, val, 1200); } }
   var pill=card.querySelector('.rh-pill'); if(pill) pill.textContent = val>=85?'Excellent':val>=70?'Above Average':val>=55?'Good':'Needs Care';
+}
+/* Home's Recovery Health summary — the selected patient's own score/trend/focus for a family/companion login, the shared demo values otherwise */
+function applyPatientHomeStats(){
+  var stats={score:74, trend:'+2', trendLabel:'Stable', focus:'Craving'};
+  if(isFamilyRole()){
+    var name=(window.__profile&&window.__profile.linkedPatient)||'';
+    var p=RH_FAMILY_PATIENTS.filter(function(x){ return x.name===name; })[0];
+    if(p) stats={score:p.score, trend:p.trend, trendLabel:p.trendLabel, focus:p.focus};
+  }
+  buildHealthGauge(stats.score, true);
+  var gauge=document.getElementById('healthGauge'); var scope=(gauge&&gauge.closest('.gauge-card'))||document;
+  var delta=scope.querySelector('.rh-trend-delta'); if(delta) delta.textContent=stats.trend;
+  var lbl=scope.querySelector('.rh-trend-lbl'); if(lbl) lbl.textContent=stats.trendLabel;
+  var focus=scope.querySelector('.rh-risk-val'); if(focus) focus.textContent=stats.focus;
 }
 /* reusable arc gauge (0–100) with an animated needle — used by the Insights screen */
 function buildArcGauge(elId, val){
@@ -1587,10 +1625,10 @@ function loginContinue(){
 }
 /* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */
 var RH_FAMILY_LINK={ phone:'+15625550193', patientName:'John David', memberName:'Sarah M.' };   /* demo: Mom's number from the patient's own contacts already links here */
-var RH_FAMILY_PATIENTS=[   /* patients this linked number is a family member of; addedAs is the name that patient gave this contact in their own app */
-  { name:'John David', relation:'parent', relationLabel:'Parent', addedAs:'Sarah M.' },
-  { name:'Maria Alvarez', relation:'sibling', relationLabel:'Sibling', addedAs:'Sarah (Sis)' },
-  { name:'Robert Chen', relation:'friend', relationLabel:'Friend', addedAs:'Sarah W.' }
+var RH_FAMILY_PATIENTS=[   /* patients this linked number is a family member of; addedAs is the name that patient gave this contact in their own app; score/trend/focus are that patient's own demo Home summary */
+  { name:'John David', relation:'parent', relationLabel:'Parent', addedAs:'Sarah M.', score:74, trend:'+2', trendLabel:'Stable', focus:'Craving' },
+  { name:'Maria Alvarez', relation:'sibling', relationLabel:'Sibling', addedAs:'Sarah (Sis)', score:88, trend:'+5', trendLabel:'Improving', focus:'Sleep' },
+  { name:'Robert Chen', relation:'friend', relationLabel:'Friend', addedAs:'Sarah W.', score:61, trend:'-3', trendLabel:'Watch', focus:'Stress' }
 ];
 function cpRenderPatients(filter){
   var box=document.getElementById('cpPatientList'); if(!box) return;
