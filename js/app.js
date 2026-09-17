@@ -14,6 +14,9 @@ function applyRoleRestrictions(){
   var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
   var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
   var patients=document.getElementById('pfPatientsSection'); if(patients) patients.style.display=(fam?'':'none');   /* patient switcher — family/companion logins only */
+  ['rwxHeroSection','gratitudeSection','streakShieldsSection','achievementsSection','levelRoadmapSection'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display=(fam?'none':'');   /* the patient's own XP/gamification progress — hidden for family/companion logins */
+  });
   if(fam && typeof pfRenderPatientSwitcher==='function') pfRenderPatientSwitcher();
   if(typeof applyPatientHomeStats==='function') applyPatientHomeStats();   /* Home's Recovery Health score/trend/focus for whichever patient is selected */
   var av=document.getElementById('pfHeroAv'), nm=document.getElementById('pfHeroName'), meta=document.getElementById('pfHeroMeta'), tags=document.getElementById('pfHeroTags');

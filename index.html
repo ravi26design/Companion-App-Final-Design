@@ -690,7 +690,7 @@
     <!-- ═══ REWARDS SCREEN (Major Gamification Hub) ═══ -->
     <div class="screen" id="screen-rewards">
       <!-- 1 + 2. Celebration hero -->
-      <div class="rwx-hero scr-full">
+      <div class="rwx-hero scr-full" id="rwxHeroSection">
         <button class="help-i" type="button" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,255,255,.7)" aria-label="About levels & XP" onclick="showHelp('rewards-level')"><i data-lucide="info"></i></button>
         <div class="rwx-medal"><img src="assets/reward-medal.gif" alt="Reward badge"></div>
         <div class="rwx-name">Level 4 Bloom</div>
@@ -790,6 +790,7 @@
       </div>
 
       <!-- 5. Gratitude Gifts -->
+      <div id="gratitudeSection">
       <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Gratitude Gifts<button class="help-i" type="button" style="margin-left:auto" aria-label="About Gratitude Gifts" onclick="showHelp('gratitude-gifts')"><i data-lucide="info"></i></button></div>
       <div class="grat-card">
         <div class="grat-top">
@@ -811,9 +812,11 @@
         </div>
         <button class="grat-btn grat-done" type="button" disabled>✓ Sent</button>
       </div>
+      </div>
 
 
       <!-- 6. Streak Shields -->
+      <div id="streakShieldsSection">
       <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Streak Shields<button class="help-i" type="button" style="margin-left:auto" aria-label="About Streak Shields" onclick="showHelp('streak-shields')"><i data-lucide="info"></i></button></div>
       <div class="grat-card scr-full">
         <div class="grat-top">
@@ -825,8 +828,10 @@
           </div>
         </div>
       </div>
+      </div>
 
       <!-- 7. Achievements -->
+      <div id="achievementsSection">
       <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Achievements · 7 of 24<button class="help-i" type="button" style="margin-left:auto" aria-label="About Achievements" onclick="showHelp('achievements')"><i data-lucide="info"></i></button></div>
       <div class="ach-scroll scr-full">
         <div class="ach-item"><div class="ach-medal" style="--m1:#EEC85E;--m2:#C9962E">30</div><div class="ach-name">30 Day Hero</div></div>
@@ -838,8 +843,10 @@
         <div class="ach-item"><div class="ach-medal" style="--m1:#EEC85E;--m2:#C9962E">7d</div><div class="ach-name">Week Warrior</div></div>
         <div class="ach-item ach-locked"><div class="ach-medal"><i data-lucide="lock"></i></div><div class="ach-name">90 Days</div></div>
       </div>
+      </div>
 
       <!-- 8. Level Roadmap -->
+      <div id="levelRoadmapSection">
       <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Level Roadmap<button class="help-i" type="button" style="margin-left:auto" aria-label="About the Level Roadmap" onclick="showHelp('level-roadmap')"><i data-lucide="info"></i></button></div>
       <div class="scr-card lr-card scr-full">
         <div class="lr-item">
@@ -866,6 +873,7 @@
           <span class="lr-dot lr-out"></span>
           <div class="lr-body"><div class="lr-row"><span class="lr-name">L6 Thrive · 5,000 XP</span><span class="lr-status lr-st-next">L6</span></div><div class="lr-note">Diamond Flame</div></div>
         </div>
+      </div>
       </div>
 
     </div>
@@ -3995,6 +4003,6 @@
     <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
   </div>
 </div>
-<script src="js/app.js?v=20260918f"></script>
+<script src="js/app.js?v=20260919a"></script>
 </body>
 </html>
