@@ -6,7 +6,10 @@
 /* ═══ NAV ═══ */
 /* Community and Help (SOS) have been removed from the app entirely — see openOv()/openSOS() guards below */
 function isFamilyRole(){ return !!(window.__profile && window.__profile.role==='family'); }
-function applyRoleRestrictions(){ /* reserved for future role-based nav restrictions */ }
+function applyRoleRestrictions(){
+  var fam=isFamilyRole();
+  var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
+}
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
@@ -1786,7 +1789,8 @@ function showHelp(key){
 }
 function hideHelp(){ var p=document.getElementById('helpPop'); if(p) p.hidden=true; }
 /* ═══ Leaderboard visibility (on by default; toggled in Settings) ═══ */
-function leaderboardOn(){ try{ return localStorage.getItem('rh_show_leaderboard')!=='0'; }catch(e){ return true; } }
+function leaderboardOn(){ if(isFamilyRole()) return false;   /* leaderboard is the patient's own peer ranking — not for family/companion logins */
+  try{ return localStorage.getItem('rh_show_leaderboard')!=='0'; }catch(e){ return true; } }
 function applyLeaderboardPref(){
   var on=leaderboardOn();
   var h=document.getElementById('lbHead'), c=document.getElementById('lbCard');
