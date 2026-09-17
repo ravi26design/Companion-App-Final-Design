@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260917d">
+<link rel="stylesheet" href="css/styles.css?v=20260917e">
 </head>
 <body>
 
@@ -1159,17 +1159,17 @@
       </div>
       <!-- Hero -->
       <div class="scr-card pf-hero">
-        <div class="pf-hero-av">AM</div>
-        <div class="pf-hero-name">Alex M.</div>
-        <div class="pf-hero-meta">Clean since January 15, 2026</div>
-        <div class="pf-tags">
+        <div class="pf-hero-av" id="pfHeroAv">AM</div>
+        <div class="pf-hero-name" id="pfHeroName">Alex M.</div>
+        <div class="pf-hero-meta" id="pfHeroMeta">Clean since January 15, 2026</div>
+        <div class="pf-tags" id="pfHeroTags">
           <span class="pf-tag pf-tag-gold">Level 4 · Bloom</span>
           <span class="pf-tag pf-tag-sage">2,340 XP</span>
         </div>
       </div>
 
       <!-- Medication -->
-      <div class="scr-card">
+      <div class="scr-card" id="pfMedSection">
         <div class="home-title">Medication</div>
         <div class="pf-contact" style="border-bottom:none;padding:0">
           <div class="pf-rav pf-av-sage"><i data-lucide="pill"></i></div>
@@ -1181,7 +1181,7 @@
       </div>
 
       <!-- What Helps Me -->
-      <div class="scr-card">
+      <div class="scr-card" id="pfHelpsMeSection">
         <div class="home-title pf-sec-head" role="button" tabindex="0" aria-label="Edit what helps me" onclick="renderProfileEdit();openOv('edit-activities')" style="display:flex;align-items:center;justify-content:space-between;cursor:pointer">
           <span>What Helps Me</span>
           <span class="pf-edit-btn" aria-hidden="true"><i data-lucide="pencil"></i></span>
@@ -3996,6 +3996,6 @@
     <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
   </div>
 </div>
-<script src="js/app.js?v=20260917d"></script>
+<script src="js/app.js?v=20260917e"></script>
 </body>
 </html>

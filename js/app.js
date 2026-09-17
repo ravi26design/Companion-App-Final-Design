@@ -11,6 +11,24 @@ function applyRoleRestrictions(){
   var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
   var cta=document.getElementById('famRewardCta'); if(cta) cta.style.display=(fam?'':'none');   /* only a family/companion login gets to pledge a reward */
   var pz=document.getElementById('prizesSection'); if(pz) pz.style.display=(fam?'none':'');   /* "Prizes I'd value" is the patient's own wishlist — hidden for family/companion logins */
+  var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
+  var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
+  var av=document.getElementById('pfHeroAv'), nm=document.getElementById('pfHeroName'), meta=document.getElementById('pfHeroMeta'), tags=document.getElementById('pfHeroTags');
+  if(fam){   /* My Profile shows the family member's own identity, not the patient's */
+    var fname=(window.__profile&&window.__profile.name)||'Family Member';
+    var initials=fname.trim().split(/\s+/).map(function(w){return w[0]||'';}).join('').slice(0,2).toUpperCase()||'FM';
+    var rel=(window.__profile&&window.__profile.relationship)||'family';
+    var relLabel=rel.charAt(0).toUpperCase()+rel.slice(1).replace(/-/g,' ');
+    if(av) av.textContent=initials;
+    if(nm) nm.textContent=fname;
+    if(meta) meta.textContent=relLabel+' of '+(RH_FAMILY_LINK.patientName||'the patient');
+    if(tags) tags.style.display='none';
+  } else {
+    if(av) av.textContent='AM';
+    if(nm) nm.textContent='Alex M.';
+    if(meta) meta.textContent='Clean since January 15, 2026';
+    if(tags) tags.style.display='';
+  }
 }
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
