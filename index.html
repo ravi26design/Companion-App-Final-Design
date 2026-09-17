@@ -520,7 +520,7 @@
 
 <!-- ═══ DESKTOP SIDEBAR (shown ≥1024px) ═══ -->
 <aside id="dnav">
-  <div class="dn-brand"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
+  <div class="dn-brand" style="cursor:pointer" onclick="goScreen('home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('home')}"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
   <nav class="dn-list">
     <button class="dn-item active" data-screen="home" onclick="goScreen('home')"><i data-lucide="house"></i><span>Home</span></button>
     <button class="dn-item" data-screen="mat" onclick="goScreen('mat')"><i data-lucide="trending-up"></i><span>Progress</span></button>
@@ -542,7 +542,7 @@
   <div class="phone-notch"></div><div class="phone-bar"></div>
   <div class="app-header">
     <button class="avatar-btn" aria-label="Profile" onclick="openProfileFull()"><i data-lucide="user-round"></i></button>
-    <div class="app-logo"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
+    <div class="app-logo" style="cursor:pointer" onclick="goScreen('home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('home')}"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
     <button class="notif-btn" aria-label="Location" onclick="openOv('location-checkin')"><i data-lucide="map-pin"></i></button>
   </div>
 
