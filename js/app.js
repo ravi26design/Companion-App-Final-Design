@@ -9,6 +9,7 @@ function isFamilyRole(){ return !!(window.__profile && window.__profile.role==='
 function applyRoleRestrictions(){
   var fam=isFamilyRole();
   var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
+  var cta=document.getElementById('famRewardCta'); if(cta) cta.style.display=(fam?'':'none');   /* only a family/companion login gets to pledge a reward */
 }
 function goScreen(id){
   if(typeof closeOv==='function') closeOv();   /* switching a main tab dismisses any open overlay (e.g. Community) */
@@ -1816,6 +1817,37 @@ function openPrizeSheet(){ var s=document.getElementById('prizeSheet'); if(!s) r
 function closePrizeSheet(){ var s=document.getElementById('prizeSheet'); if(s){ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); } }
 function prizeSheetAdd(){ var i=document.getElementById('prizeInput'); if(!i) return; var v=(i.value||'').trim(); if(!v){ i.focus(); return; } wishAdd(v); i.value=''; closePrizeSheet(); }
 function wishRemoveAt(i){ var a=wishGet(); a.splice(i,1); wishSave(a); renderWish(); }
+/* Give-a-reward bottom sheet (family/companion role — pledge from the patient's wishlist, or write a custom reward) */
+function openGiveRewardSheet(){
+  var s=document.getElementById('giveRewardSheet'); if(!s) return;
+  var ri=document.getElementById('giveRewardInput'), ci=document.getElementById('giveRewardCond');
+  if(ri) ri.value=''; if(ci) ci.value='';
+  var pn=document.getElementById('giveRewardPatientName'); if(pn) pn.textContent=(RH_FAMILY_LINK.patientName||'their').split(' ')[0]+"'s";
+  var wrap=document.getElementById('giveRewardWishWrap'), chips=document.getElementById('giveRewardWishChips');
+  var items=wishGet();
+  if(chips){
+    chips.innerHTML=items.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
+  }
+  if(wrap) wrap.style.display=items.length?'':'none';
+  s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons();
+  setTimeout(function(){ if(ri) ri.focus(); }, 300);
+}
+function giveRewardPick(btn){ var v=btn.getAttribute('data-val')||''; var ri=document.getElementById('giveRewardInput'); if(ri){ ri.value=v; ri.focus(); } }
+function closeGiveRewardSheet(){ var s=document.getElementById('giveRewardSheet'); if(s){ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); } }
+function giveRewardSheetAdd(){
+  var ri=document.getElementById('giveRewardInput'), ci=document.getElementById('giveRewardCond');
+  var reward=((ri&&ri.value)||'').trim(); if(!reward){ if(ri) ri.focus(); return; }
+  var cond=((ci&&ci.value)||'').trim()||'a milestone';
+  var giverName=((window.__profile&&window.__profile.name)||'Family').split(' ')[0];
+  var list=document.getElementById('famRewardCards'); if(!list) return;
+  var row=document.createElement('div'); row.className='lrow'; row.style.flexWrap='wrap';
+  row.innerHTML='<div class="lrow-ic" style="background:#EFEAF6;color:#7A6AA8;font-size:12px">'+wishEsc(giverName.slice(0,3).toUpperCase())+'</div>'+
+    '<div class="lrow-main"><div class="lrow-t">'+wishEsc(giverName)+"'s Reward: "+wishEsc(reward)+'</div><div class="lrow-d" style="color:#7A6AA8">Unlocks at '+wishEsc(cond)+'</div></div>'+
+    '<div style="flex-basis:100%;margin-top:10px"><div class="scr-bar"><div class="scr-bar-fill" style="width:0%;background:#84B27F"></div></div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft);margin-top:6px">Just pledged!</div></div>';
+  list.insertBefore(row, list.firstChild);
+  closeGiveRewardSheet();
+  if(typeof toast==='function') toast('Pledged "'+reward+'" for '+((RH_FAMILY_LINK.patientName||'').split(' ')[0]||'them')+'.');
+}
 function renderWish(){
   var box=document.getElementById('wishList'); if(!box) return;
   var a=wishGet();

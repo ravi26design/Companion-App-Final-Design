@@ -4452,9 +4452,9 @@ body:not(.in-room) #s-community > .anon-note{ display:none !important; }
 .pf-add-btn{display:inline-flex;align-items:center;gap:4px;border:0;background:var(--blue-lt);color:var(--blue-ink,#3F6E99);font-family:var(--font-ui);font-size:12px;font-weight:800;padding:6px 12px;border-radius:999px;cursor:pointer;transition:.16s;text-transform:none;letter-spacing:0}
 .pf-add-btn i,.pf-add-btn svg{width:14px;height:14px}
 .pf-add-btn:active{transform:scale(.95)}
-#addPersonSheet,#prizeSheet{position:fixed;inset:0;z-index:9700;display:none}
-#addPersonSheet.show,#prizeSheet.show{display:block}
-#addPersonSheet::before,#prizeSheet::before{content:'';position:absolute;inset:0;background:rgba(40,36,33,.45);animation:lmFade .25s ease both}
+#addPersonSheet,#prizeSheet,#giveRewardSheet{position:fixed;inset:0;z-index:9700;display:none}
+#addPersonSheet.show,#prizeSheet.show,#giveRewardSheet.show{display:block}
+#addPersonSheet::before,#prizeSheet::before,#giveRewardSheet::before{content:'';position:absolute;inset:0;background:rgba(40,36,33,.45);animation:lmFade .25s ease both}
 /* Prizes header "+ Add" CTA */
 .prize-add-cta{display:inline-flex;align-items:center;gap:4px;border:none;background:linear-gradient(135deg,#6DA0CC,#3F6E99);color:#fff;font-family:var(--font-ui);font-size:12px;font-weight:800;letter-spacing:0;text-transform:none;padding:6px 14px;border-radius:999px;cursor:pointer;box-shadow:0 6px 14px -6px rgba(63,110,153,.6);transition:transform .12s}
 .prize-add-cta:active{transform:scale(.95)}

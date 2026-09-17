@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260917b">
+<link rel="stylesheet" href="css/styles.css?v=20260917c">
 </head>
 <body>
 
@@ -439,6 +439,33 @@
   </div>
 </div>
 
+<!-- Give a family reward · bottom sheet -->
+<div id="giveRewardSheet" aria-hidden="true" onclick="if(event.target===this)closeGiveRewardSheet()">
+  <div class="pf-sheet aps-sheet">
+    <button class="sheet-close" type="button" onclick="closeGiveRewardSheet()" aria-label="Close"><i data-lucide="x"></i></button>
+    <div class="sheet-grab"></div>
+    <div class="aps-head">
+      <span class="aps-head-ic" style="background:var(--gold-lt,#FBF4E2);color:#9A6B16"><i data-lucide="gift"></i></span>
+      <div class="aps-head-tt">
+        <h3 class="aps-title">Give a reward</h3>
+        <p class="aps-lead">Pledge something to celebrate a milestone.</p>
+      </div>
+    </div>
+    <div id="giveRewardWishWrap" style="display:none">
+      <label class="aps-l">From <span id="giveRewardPatientName">their</span> wishlist</label>
+      <div class="wish-common" id="giveRewardWishChips" style="margin-bottom:14px"></div>
+    </div>
+    <label class="aps-l" for="giveRewardInput">Reward <span style="font-weight:400;color:var(--muted)">(pick one above, or write your own)</span></label>
+    <input class="aps-in" type="text" id="giveRewardInput" placeholder="e.g. Dinner at Olive Garden" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('giveRewardCond').focus()}">
+    <label class="aps-l" for="giveRewardCond">Unlocks at</label>
+    <input class="aps-in" type="text" id="giveRewardCond" placeholder="e.g. 30-day MOUD Streak" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();giveRewardSheetAdd()}">
+    <div class="aps-actions">
+      <button class="aps-cancel" type="button" onclick="closeGiveRewardSheet()">Cancel</button>
+      <button class="aps-add" type="button" onclick="giveRewardSheetAdd()">Give reward</button>
+    </div>
+  </div>
+</div>
+
 <div id="addPersonSheet" aria-hidden="true" onclick="if(event.target===this)closeAddPerson()">
   <div class="pf-sheet aps-sheet">
     <button class="sheet-close" type="button" onclick="closeAddPerson()" aria-label="Close"><i data-lucide="x"></i></button>
@@ -719,7 +746,8 @@
       </div>
 
       <!-- 4. Family Reward Board -->
-      <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Family Reward Board<button class="help-i" type="button" style="margin-left:auto" aria-label="About the Family Reward Board" onclick="showHelp('family-rewards')"><i data-lucide="info"></i></button></div>
+      <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Family Reward Board<button class="help-i" type="button" aria-label="About the Family Reward Board" onclick="showHelp('family-rewards')"><i data-lucide="info"></i></button><button class="prize-add-cta" type="button" id="famRewardCta" style="margin-left:auto;display:none" onclick="openGiveRewardSheet()"><i data-lucide="plus"></i> Give a reward</button></div>
+      <div id="famRewardCards">
       <div class="lrow" style="flex-wrap:wrap">
         <div class="lrow-ic" style="background:#FBF4E2;color:#9A7C28;font-size:12px">MOM</div>
         <div class="lrow-main">
@@ -754,6 +782,7 @@
           <div class="scr-bar"><div class="scr-bar-fill" style="width:52%;background:#84B27F"></div></div>
           <div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft);margin-top:6px">15 days to go</div>
         </div>
+      </div>
       </div>
 
       <div class="lrow lrow-earned" style="background:#CBE4C2">
@@ -3965,6 +3994,6 @@
     <button class="tour-skip" type="button" onclick="tourSkip()">Skip</button>
   </div>
 </div>
-<script src="js/app.js?v=20260917b"></script>
+<script src="js/app.js?v=20260917c"></script>
 </body>
 </html>
