@@ -1538,16 +1538,8 @@ function loginContinue(){
   if(d.length<10){ var row=document.getElementById('loginPhRow'); if(row){ row.classList.add('err'); setTimeout(function(){ row.classList.remove('err'); },1200); } if(inp) inp.focus(); return; }
   window.__phone=(typeof __cc!=='undefined'&&__cc?__cc.d:'+1')+d;
   var existing=rhGetUser(window.__phone);
-  window.__familyLogin=(window.__phone===RH_FAMILY_LINK.phone && !existing);
-  if(existing || window.__familyLogin){
-    /* registered (or a linked family number) → just verify with OTP, then route accordingly */
-    showOtpScreen();   /* login screen stays behind the dimmed OTP sheet */
-  } else {
-    /* no self-registration — unrecognized numbers can't get in */
-    var row=document.getElementById('loginPhRow'); if(row){ row.classList.add('err'); setTimeout(function(){ row.classList.remove('err'); },1200); }
-    var em=document.getElementById('loginPhErrMsg'); if(em) em.style.display='';
-    if(inp) inp.focus();
-  }
+  window.__familyLogin=!existing;   /* any number not already registered goes through the family-companion sign-up */
+  showOtpScreen();   /* login screen stays behind the dimmed OTP sheet */
 }
 /* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */
 var RH_FAMILY_LINK={ phone:'+15625550193', patientName:'John David', memberName:'Sarah M.' };   /* demo: Mom's number from the patient's own contacts already links here */
@@ -1555,7 +1547,7 @@ function showCompanionScreen(){
   var s=document.getElementById('companionScreen'); if(!s) return;
   var pn=document.getElementById('cpPatientName'); if(pn) pn.textContent=RH_FAMILY_LINK.patientName;
   var pf=document.getElementById('cpPatientFirst'); if(pf) pf.textContent=RH_FAMILY_LINK.patientName.split(' ')[0];
-  var nm=document.getElementById('cpName'); if(nm) nm.value=RH_FAMILY_LINK.memberName;   /* autofilled — we already know who this number belongs to */
+  var nm=document.getElementById('cpName'); if(nm) nm.value=(window.__phone===RH_FAMILY_LINK.phone ? RH_FAMILY_LINK.memberName : '');   /* autofilled only when we already know who this number belongs to */
   s.style.display=''; s.classList.remove('hide'); s.classList.add('show');
 }
 function hideCompanionScreen(){
