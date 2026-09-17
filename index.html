@@ -411,27 +411,6 @@
 </div>
 
 <!-- Add someone to My People · bottom sheet -->
-<!-- Add a prize bottom sheet -->
-<div id="prizeSheet" aria-hidden="true" onclick="if(event.target===this)closePrizeSheet()">
-  <div class="pf-sheet aps-sheet">
-    <button class="sheet-close" type="button" onclick="closePrizeSheet()" aria-label="Close"><i data-lucide="x"></i></button>
-    <div class="sheet-grab"></div>
-    <div class="aps-head">
-      <span class="aps-head-ic" style="background:var(--gold-lt,#FBF4E2);color:#9A6B16"><i data-lucide="gift"></i></span>
-      <div class="aps-head-tt">
-        <h3 class="aps-title">Add a prize</h3>
-        <p class="aps-lead">A reward that would keep you motivated.</p>
-      </div>
-    </div>
-    <label class="aps-l" for="prizeInput">Prize</label>
-    <input class="aps-in" type="text" id="prizeInput" placeholder="e.g. Weekend camping trip" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();prizeSheetAdd()}">
-    <div class="aps-actions">
-      <button class="aps-cancel" type="button" onclick="closePrizeSheet()">Cancel</button>
-      <button class="aps-add" type="button" onclick="prizeSheetAdd()">Add prize</button>
-    </div>
-  </div>
-</div>
-
 <!-- Give a family reward · bottom sheet -->
 <div id="giveRewardSheet" aria-hidden="true" onclick="if(event.target===this)closeGiveRewardSheet()">
   <div class="pf-sheet aps-sheet">
@@ -709,37 +688,6 @@
         </div>
       </div>
 
-      <!-- 3. Anonymous Leaderboard (tier pill hidden for Alpha; whole section toggleable in Settings) -->
-      <div class="rw-lbhead scr-full" id="lbHead"><span class="rw-lbhead-t">Anonymous Leaderboard</span><button class="help-i" type="button" aria-label="About the leaderboard" onclick="showHelp('leaderboard')"><i data-lucide="info"></i></button></div>
-      <div class="scr-card scr-full" id="lbCard" style="padding:6px 0">
-        <div class="lb-row"><div class="lb-rank">1</div><div class="lb-av" style="background:#7BA47E;font-size:13px;width:36px;height:36px">P</div><div style="flex:1"><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink)">Phoenix123</div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft)">68-days MOUD streak · L5 Flourish</div></div><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--gold-dk)">3,840</div></div>
-        <div class="lb-row"><div class="lb-rank">2</div><div class="lb-av" style="background:#9C8FC4;font-size:13px;width:36px;height:36px">R</div><div style="flex:1"><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink)">RisingTide</div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft)">52-days MOUD streak · L4 Bloom</div></div><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--gold-dk)">2,960</div></div>
-        <div class="lb-row me"><div class="lb-rank">3</div><div class="lb-av" style="background:#C98FA0;font-size:13px;width:36px;height:36px">ME</div><div style="flex:1"><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink)">You (VictoryWarrior)</div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft)">47-days MOUD streak · L4 Bloom</div></div><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--gold-dk)">2,340</div></div>
-        <div class="lb-row"><div class="lb-rank">4</div><div class="lb-av" style="background:#7FAAC4;font-size:13px;width:36px;height:36px">K</div><div style="flex:1"><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink)">KindredSpirit</div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft)">39-days MOUD streak · L3 Root</div></div><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink-soft)">1,810</div></div>
-        <div class="lb-row"><div class="lb-rank">5</div><div class="lb-av" style="background:#D49A78;font-size:13px;width:36px;height:36px">N</div><div style="flex:1"><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink)">NewDawn44</div><div style="font-family:var(--font-ui);font-size:12px;color:var(--ink-soft)">31-days MOUD streak · L3 Root</div></div><div style="font-family:var(--font-ui);font-size:13px;font-weight:700;color:var(--ink-soft)">1,540</div></div>
-      </div>
-
-      <!-- Prizes I'd value (personal wishlist) -->
-      <div id="prizesSection">
-      <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Prizes I'd value<button class="help-i" type="button" style="text-transform:none;letter-spacing:0" aria-label="About prizes" onclick="showHelp('prizes')"><i data-lucide="info"></i></button><button class="prize-add-cta" type="button" style="margin-left:auto" onclick="openPrizeSheet()"><i data-lucide="plus"></i> Add</button></div>
-      <div class="scr-card scr-full">
-        <div style="font-family:var(--font-ui);font-size:12.5px;color:var(--ink-soft);margin:0 0 12px">Pick the rewards that would keep you going — your family and care team can pledge these for your milestones.</div>
-        <div class="wish-chosen" id="wishList"></div>
-        <div class="wish-sub">Common prizes</div>
-        <div class="wish-common">
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Movie night</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Dinner out</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">A new book</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Concert tickets</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">New clothes</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Video game</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Coffee treat</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Weekend trip</button>
-          <button type="button" class="wish-chip" onclick="wishAdd(this.textContent)">Spa day</button>
-        </div>
-      </div>
-      </div>
-
       <!-- 4. Family Reward Board -->
       <div class="scr-eyebrow" id="famRewardHead" style="display:flex;align-items:center;gap:7px">Family Reward Board<button class="help-i" type="button" aria-label="About the Family Reward Board" onclick="showHelp('family-rewards')"><i data-lucide="info"></i></button><button class="prize-add-cta" type="button" id="famRewardCta" style="margin-left:auto;display:none" onclick="openGiveRewardSheet()"><i data-lucide="plus"></i> Give a reward</button></div>
       <div id="famRewardCards">
@@ -814,36 +762,6 @@
       </div>
       </div>
 
-
-      <!-- 6. Streak Shields -->
-      <div id="streakShieldsSection">
-      <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Streak Shields<button class="help-i" type="button" style="margin-left:auto" aria-label="About Streak Shields" onclick="showHelp('streak-shields')"><i data-lucide="info"></i></button></div>
-      <div class="grat-card scr-full">
-        <div class="grat-top">
-          <div class="lrow-ic" style="background:#C25445;color:#fff"><i data-lucide="shield-check"></i></div>
-          <div class="lrow-main">
-            <div class="lrow-t">1 Shield Available</div>
-            <div class="lrow-d">Auto-protects any of your streaks if you miss a day</div>
-            <div class="lrow-note">Earn 1 new shield for every 7 days of app use</div>
-          </div>
-        </div>
-      </div>
-      </div>
-
-      <!-- 7. Achievements -->
-      <div id="achievementsSection">
-      <div class="scr-eyebrow" style="display:flex;align-items:center;gap:7px">Achievements · 7 of 24<button class="help-i" type="button" style="margin-left:auto" aria-label="About Achievements" onclick="showHelp('achievements')"><i data-lucide="info"></i></button></div>
-      <div class="ach-scroll scr-full">
-        <div class="ach-item"><div class="ach-medal" style="--m1:#EEC85E;--m2:#C9962E">30</div><div class="ach-name">30 Day Hero</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#93C085;--m2:#5E8560">Rx</div><div class="ach-name">MOUD Master</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#B4A0E2;--m2:#7A6AA8">AI</div><div class="ach-name">Sage Friend</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#E7AC8E;--m2:#C1795C">Nx</div><div class="ach-name">Narcan Ready</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#92BDDD;--m2:#4A7EA8">VJ</div><div class="ach-name">Voice Healer</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#DCA6B6;--m2:#B56C82">FM</div><div class="ach-name">Family Bond</div></div>
-        <div class="ach-item"><div class="ach-medal" style="--m1:#EEC85E;--m2:#C9962E">7d</div><div class="ach-name">Week Warrior</div></div>
-        <div class="ach-item ach-locked"><div class="ach-medal"><i data-lucide="lock"></i></div><div class="ach-name">90 Days</div></div>
-      </div>
-      </div>
 
       <!-- 8. Level Roadmap -->
       <div id="levelRoadmapSection">
@@ -1603,10 +1521,6 @@
         <div class="set-row"><div class="set-lbl"><div class="set-t">Larger text</div><div class="set-d">Increase font size across the app</div></div><button class="set-toggle" type="button" onclick="this.classList.toggle('on')" aria-label="Toggle"></button></div>
         <div class="set-row"><div class="set-lbl"><div class="set-t">High contrast</div><div class="set-d">Stronger colors for readability</div></div><button class="set-toggle" type="button" onclick="this.classList.toggle('on')" aria-label="Toggle"></button></div>
         <div class="set-row"><div class="set-lbl"><div class="set-t">Reduce motion</div><div class="set-d">Minimize animations</div></div><button class="set-toggle" type="button" onclick="this.classList.toggle('on')" aria-label="Toggle"></button></div>
-      </div>
-      <div class="set-sec">Rewards</div>
-      <div class="set-card">
-        <div class="set-row"><div class="set-lbl"><div class="set-t">Show leaderboard</div><div class="set-d">Display the anonymous leaderboard on Rewards</div></div><button class="set-toggle on" id="lbToggle" type="button" onclick="toggleLeaderboardPref(this)" aria-label="Toggle"></button></div>
       </div>
       <div class="set-sec">Language</div>
       <div class="set-card">

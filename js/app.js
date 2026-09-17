@@ -10,18 +10,12 @@ function applyRoleRestrictions(){
   var fam=isFamilyRole();
   var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
   var cta=document.getElementById('famRewardCta'); if(cta) cta.style.display=(fam?'':'none');   /* only a family/companion login gets to pledge a reward */
-  var pz=document.getElementById('prizesSection'); if(pz) pz.style.display=(fam?'none':'');   /* "Prizes I'd value" is the patient's own wishlist — hidden for family/companion logins */
   var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
   var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
   var patients=document.getElementById('pfPatientsSection'); if(patients) patients.style.display=(fam?'':'none');   /* patient switcher — family/companion logins only */
-  ['gratitudeSection','streakShieldsSection','achievementsSection','levelRoadmapSection'].forEach(function(id){
+  ['gratitudeSection','levelRoadmapSection'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.style.display=(fam?'none':'');   /* the patient's own XP/gamification progress — hidden for family/companion logins */
   });
-  var hero=document.getElementById('rwxHeroSection'), famHead=document.getElementById('famRewardHead'), lbHead2=document.getElementById('lbHead');
-  if(hero){   /* family/companion logins see the linked patient's level/XP card moved directly above the Family Reward Board, instead of at the top of the page */
-    if(fam && famHead && hero.nextElementSibling!==famHead) famHead.parentNode.insertBefore(hero, famHead);
-    else if(!fam && lbHead2 && hero.nextElementSibling!==lbHead2) lbHead2.parentNode.insertBefore(hero, lbHead2);
-  }
   if(fam && typeof pfRenderPatientSwitcher==='function') pfRenderPatientSwitcher();
   if(typeof applyPatientHomeStats==='function') applyPatientHomeStats();   /* Home's Recovery Health score/trend/focus for whichever patient is selected */
   var av=document.getElementById('pfHeroAv'), nm=document.getElementById('pfHeroName'), meta=document.getElementById('pfHeroMeta'), tags=document.getElementById('pfHeroTags');
@@ -74,8 +68,6 @@ function goScreen(id){
   try{localStorage.setItem('rh_screen',id);}catch(e){}
   document.getElementById('screenArea').scrollTop=0;
   if(id==='mat'){ setTimeout(updatePatternChart,50); setTimeout(updateRecoveryHealthChart,50); }
-  if(id==='rewards' && typeof renderWish==='function') renderWish();   /* prizes wishlist */
-  if(id==='rewards' && typeof applyLeaderboardPref==='function') applyLeaderboardPref();   /* leaderboard visibility */
   if(id==='home' && typeof scheduleCheckin==='function') scheduleCheckin();   /* daily check-in prompt 2s after landing on home */
   if(id==='profile' && typeof renderProfileLists==='function') renderProfileLists();   /* triggers / relief / contacts */
   if(id==='tools' && typeof actzPaintTiles==='function') actzPaintTiles();   /* mark completed activities */
@@ -121,7 +113,6 @@ function openOv(id){
   if(id==='urge' && typeof populateUrge==='function') populateUrge();   /* fill relief activities + contacts (e.g. after refresh-restore) */
   if(id==='manage-team' && typeof renderTeam==='function') renderTeam();   /* render the support-team list */
   if(id==='friends' && typeof frRender==='function') frRender();   /* followers & friends list */
-  if(id==='settings' && typeof applyLeaderboardPref==='function') applyLeaderboardPref();   /* sync leaderboard toggle */
   if(id==='rooms'){   /* Community is a nav destination — light up its nav tab */
     document.querySelectorAll('.bottom-nav .nav-tab, #dnav .dn-item').forEach(function(t){ t.classList.toggle('active', ((t.getAttribute('onclick')||'').indexOf("'rooms'")>=0)); });
   }
@@ -1898,16 +1889,12 @@ var HELP_CONTENT={
   'rooms':{title:'Find your people', body:'Join topic rooms to share and get support from people who understand. Everyone is anonymous — only usernames are shown, never your real name.'},
   'friends':{title:'Followers & Friends', body:'Your connections on Rudra. Follow people whose journey inspires you and add friends you trust — all under usernames, never real names.'},
   'safe':{title:'Anonymous support', body:'One-to-one support and meetings whenever you need them. Reach a peer specialist or coach privately, or find an in-person, virtual or hybrid meeting.'},
-  'prizes':{title:"Prizes I'd value", body:'Build a list of rewards that would genuinely motivate you. Your family, sponsor or care team can pledge these to your milestones. Pick from common prizes or add your own.'},
   'streaks':{title:'Streaks', body:'Your streaks show how many days in a row you\'ve kept up each habit — recovery, insights, activities, reflections and medication. Longer streaks earn bonus XP. Missing a day resets that streak, but you can always start again.'},
   'recovery-today':{title:'Recovery Today', body:'Your daily plan — four quick actions worth XP: Insights (a read on your day), Reflect (your check-in), Tx Schedule (meds, therapy & meetings) and Activities (a guided exercise). Finish all four to complete your day.'},
   'find-support':{title:'1:1 Support', body:'Connect privately with a recovery coach or a peer specialist. Peers are in their own long-term recovery and free; coaches are trained professionals who show their cost up front. Filter by distance, format and focus to find the right match — then Call or Text them directly.'},
   'rewards-level':{title:'Levels & XP', body:'You earn XP for daily actions — insights, activities, reflections and medication — and grow through levels: Seed, Root, Bloom and Flourish. The multipliers (like 4x) show which habits earn the most. It\'s a gentle picture of how far you\'ve come.'},
-  'leaderboard':{title:'Anonymous Leaderboard', body:'See how your XP compares with others in recovery — always under anonymous usernames, never real names. It\'s here for friendly motivation only; you can hide it anytime from Settings.'},
   'family-rewards':{title:'Family Reward Board', body:'Rewards your family, sponsor or care team pledge to your milestones. Each one unlocks when you hit its goal — a MOUD streak, a level, or days of reflection — and the bar shows how close you are.'},
   'gratitude-gifts':{title:'Gratitude Gifts', body:'A gentle prompt to thank the people who pledged rewards to you. A quick note of gratitude strengthens the support around your recovery — and it feels good to send.'},
-  'streak-shields':{title:'Streak Shields', body:'Shields auto-protect your streaks if you miss a day, so one off day doesn\'t reset your progress. You earn a new shield for every 7 days of app use.'},
-  'achievements':{title:'Achievements', body:'Badges you unlock for milestones along the way — days reached, habits kept and firsts. You\'ve earned 7 of 24 so far; tap a badge to see what it takes.'},
   'level-roadmap':{title:'Level Roadmap', body:'Your journey through the levels — Seed, Sprout, Root, Bloom, Flourish and Thrive — and the XP each one needs. It shows where you are now and what\'s coming next.'}
 };
 function showHelp(key){
@@ -1917,48 +1904,18 @@ function showHelp(key){
   var p=document.getElementById('helpPop'); if(p){ p.hidden=false; if(window.lucide&&lucide.createIcons) lucide.createIcons(); }
 }
 function hideHelp(){ var p=document.getElementById('helpPop'); if(p) p.hidden=true; }
-/* ═══ Leaderboard visibility (on by default; toggled in Settings) ═══ */
-function leaderboardOn(){ if(isFamilyRole()) return false;   /* leaderboard is the patient's own peer ranking — not for family/companion logins */
-  try{ return localStorage.getItem('rh_show_leaderboard')!=='0'; }catch(e){ return true; } }
-function applyLeaderboardPref(){
-  var on=leaderboardOn();
-  var h=document.getElementById('lbHead'), c=document.getElementById('lbCard');
-  if(h) h.style.display=on?'':'none';
-  if(c) c.style.display=on?'':'none';
-  var t=document.getElementById('lbToggle'); if(t) t.classList.toggle('on', on);
-}
-function toggleLeaderboardPref(){
-  var on=!leaderboardOn();
-  try{ localStorage.setItem('rh_show_leaderboard', on?'1':'0'); }catch(e){}
-  applyLeaderboardPref();
-}
-/* ═══ Prizes I'd value — personal reward wishlist ═══ */
 var RH_COMMON_PRIZES=['Movie night','Dinner out','A new book','Concert tickets','New clothes','Video game','Coffee treat','Weekend trip','Spa day'];
-function wishGet(){ try{ return JSON.parse(localStorage.getItem('rh_wishlist')||'[]'); }catch(e){ return []; } }
-function wishSave(a){ try{ localStorage.setItem('rh_wishlist', JSON.stringify(a)); }catch(e){} }
 function wishEsc(s){ return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];}); }
-function wishAdd(name){ name=(name||'').trim(); if(!name) return; var a=wishGet();
-  if(a.map(function(x){return x.toLowerCase();}).indexOf(name.toLowerCase())<0){ a.push(name); wishSave(a); renderWish(); if(typeof toast==='function') toast('Added "'+name+'" to your prizes.'); } }
-function wishAddCustom(){ var inp=document.getElementById('wishInput'); if(!inp) return; wishAdd(inp.value); inp.value=''; inp.focus(); }
-/* Add-a-prize bottom sheet */
-function openPrizeSheet(){ var s=document.getElementById('prizeSheet'); if(!s) return; var i=document.getElementById('prizeInput'); if(i) i.value='';
-  matchSheetToContentWidth(s);
-  s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons(); setTimeout(function(){ if(i) i.focus(); }, 300); }
-function closePrizeSheet(){ var s=document.getElementById('prizeSheet'); if(s){ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); } }
-function prizeSheetAdd(){ var i=document.getElementById('prizeInput'); if(!i) return; var v=(i.value||'').trim(); if(!v){ i.focus(); return; } wishAdd(v); i.value=''; closePrizeSheet(); }
-function wishRemoveAt(i){ var a=wishGet(); a.splice(i,1); wishSave(a); renderWish(); }
-/* Give-a-reward bottom sheet (family/companion role — pledge from the patient's wishlist, or write a custom reward) */
+/* Give-a-reward bottom sheet (family/companion role — pledge a common prize, or write a custom reward) */
 function openGiveRewardSheet(){
   var s=document.getElementById('giveRewardSheet'); if(!s) return;
   var ri=document.getElementById('giveRewardInput'), ci=document.getElementById('giveRewardCond');
   if(ri) ri.value=''; if(ci) ci.value='';
   var wrap=document.getElementById('giveRewardWishWrap'), chips=document.getElementById('giveRewardWishChips');
-  var mine=wishGet();
-  var items=mine.concat(RH_COMMON_PRIZES.filter(function(x){ return mine.map(function(m){return m.toLowerCase();}).indexOf(x.toLowerCase())<0; }));
   if(chips){
-    chips.innerHTML=items.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
+    chips.innerHTML=RH_COMMON_PRIZES.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
   }
-  if(wrap) wrap.style.display=items.length?'':'none';
+  if(wrap) wrap.style.display='';
   matchSheetToContentWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons();
   setTimeout(function(){ if(ri) ri.focus(); }, 300);
@@ -1978,15 +1935,6 @@ function giveRewardSheetAdd(){
   list.insertBefore(row, list.firstChild);
   closeGiveRewardSheet();
   if(typeof toast==='function') toast('Pledged "'+reward+'" for '+((RH_FAMILY_LINK.patientName||'').split(' ')[0]||'them')+'.');
-}
-function renderWish(){
-  var box=document.getElementById('wishList'); if(!box) return;
-  var a=wishGet();
-  if(!a.length){ box.innerHTML='<div class="wish-empty">No prizes yet — tap a common prize below or add your own.</div>'; }
-  else { box.innerHTML=a.map(function(x,i){ return '<span class="wish-item"><i data-lucide="gift"></i><span>'+wishEsc(x)+'</span><button class="wish-x" type="button" onclick="wishRemoveAt('+i+')" aria-label="Remove">&times;</button></span>'; }).join(''); }
-  var lc=a.map(function(x){return x.toLowerCase();});
-  document.querySelectorAll('.wish-chip').forEach(function(c){ c.classList.toggle('added', lc.indexOf((c.textContent||'').trim().toLowerCase())>=0); });
-  if(window.lucide&&lucide.createIcons) lucide.createIcons();
 }
 /* Privacy eye: hide/blur a card's data (tap to reveal) */
 function toggleCardPrivacy(btn){
