@@ -51,13 +51,29 @@ function goScreen(id){
   if(id==='tools' && typeof applyRecState==='function') applyRecState();   /* Today's Activity done-state */
   if(id==='tools' && typeof applyTodayActState==='function') applyTodayActState();   /* Managing Cravings card: check only once marked done */
 }
+/* desktop: counter the page zoom so a fixed overlay INSIDE the zoomed #phone renders at the intended scale rather than compounding it */
+function applyDesktopZoom(el){
+  if(!el) return;
+  if(document.body.classList.contains('is-desktop') && window.__deskF){ var _vw=window.innerWidth; var _t=Math.min(1.3,(_vw-24)/620); el.style.zoom=_t/window.__deskF; }
+  else { el.style.zoom=''; }
+}
+/* bottom sheets (prize / give-a-reward / add-person) live at the body level, outside #phone, so on desktop they'd otherwise stay pinned to their small mobile max-width — size the card to match the phone frame's own rendered width instead */
+function matchSheetToPhoneWidth(sheetEl){
+  if(!sheetEl) return;
+  var card=sheetEl.querySelector('.aps-sheet, .pf-sheet'); if(!card) return;
+  var phone=document.getElementById('phone');
+  if(document.body.classList.contains('is-desktop') && phone){
+    var w=phone.getBoundingClientRect().width;
+    if(w>0) card.style.maxWidth=w+'px';
+  } else {
+    card.style.maxWidth='';
+  }
+}
 function openOv(id){
   if(id==='rooms') return;   /* Community has been removed from the app */
   if(typeof stopPageAudio==='function')stopPageAudio();
   var el=document.getElementById('ov-'+id);if(!el)return;
-  /* desktop: counter the page zoom so the fixed overlay covers the viewport at native scale */
-  if(document.body.classList.contains('is-desktop') && window.__deskF){ var _vw=window.innerWidth; var _t=Math.min(1.3,(_vw-24)/620); el.style.zoom=_t/window.__deskF; }
-  else { el.style.zoom=''; }
+  applyDesktopZoom(el);
   el.classList.add('active');
   el.scrollTop=0; var b=el.querySelector('.ov-body'); if(b) b.scrollTop=0;
   if(id==='relief-breath' && typeof startBreath==='function') startBreath();           /* start 4-7-8 cycle */
@@ -1880,6 +1896,7 @@ function wishAdd(name){ name=(name||'').trim(); if(!name) return; var a=wishGet(
 function wishAddCustom(){ var inp=document.getElementById('wishInput'); if(!inp) return; wishAdd(inp.value); inp.value=''; inp.focus(); }
 /* Add-a-prize bottom sheet */
 function openPrizeSheet(){ var s=document.getElementById('prizeSheet'); if(!s) return; var i=document.getElementById('prizeInput'); if(i) i.value='';
+  matchSheetToPhoneWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons(); setTimeout(function(){ if(i) i.focus(); }, 300); }
 function closePrizeSheet(){ var s=document.getElementById('prizeSheet'); if(s){ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); } }
 function prizeSheetAdd(){ var i=document.getElementById('prizeInput'); if(!i) return; var v=(i.value||'').trim(); if(!v){ i.focus(); return; } wishAdd(v); i.value=''; closePrizeSheet(); }
@@ -1896,6 +1913,7 @@ function openGiveRewardSheet(){
     chips.innerHTML=items.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
   }
   if(wrap) wrap.style.display=items.length?'':'none';
+  matchSheetToPhoneWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons();
   setTimeout(function(){ if(ri) ri.focus(); }, 300);
 }
@@ -2582,6 +2600,7 @@ function openAddPerson(){
   var seg=document.getElementById('apsRel');
   if(seg) seg.querySelectorAll('.aps-seg-b').forEach(function(b,i){ b.classList.toggle('on', i===0); });
   apsSync();
+  matchSheetToPhoneWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false');
   if(window.lucide&&lucide.createIcons) lucide.createIcons();
 }
