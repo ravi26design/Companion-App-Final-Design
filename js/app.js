@@ -1566,10 +1566,10 @@ function loginContinue(){
 }
 /* ═══ COMPANION LOGIN (family member of an existing patient) ═══ */
 var RH_FAMILY_LINK={ phone:'+15625550193', patientName:'John David', memberName:'Sarah M.' };   /* demo: Mom's number from the patient's own contacts already links here */
-var RH_FAMILY_PATIENTS=[   /* patients this linked number is a family member of */
-  { name:'John David', relation:'parent', relationLabel:'Parent' },
-  { name:'Maria Alvarez', relation:'sibling', relationLabel:'Sibling' },
-  { name:'Robert Chen', relation:'friend', relationLabel:'Friend' }
+var RH_FAMILY_PATIENTS=[   /* patients this linked number is a family member of; addedAs is the name that patient gave this contact in their own app */
+  { name:'John David', relation:'parent', relationLabel:'Parent', addedAs:'Sarah M.' },
+  { name:'Maria Alvarez', relation:'sibling', relationLabel:'Sibling', addedAs:'Sarah (Sis)' },
+  { name:'Robert Chen', relation:'friend', relationLabel:'Friend', addedAs:'Sarah W.' }
 ];
 function cpRenderPatients(filter){
   var box=document.getElementById('cpPatientList'); if(!box) return;
@@ -1593,6 +1593,9 @@ function cpSelectPatient(btn){
   document.querySelectorAll('.cp-patient-row').forEach(function(r){ r.classList.toggle('sel', r===btn); });
   var f=document.getElementById('cpRelField'); if(f) f.classList.remove('err');
   cpSyncHero(p);
+  if(window.__phone===RH_FAMILY_LINK.phone && p.addedAs){   /* re-autofill with the name THIS patient added them as */
+    var nm=document.getElementById('cpName'); if(nm) nm.value=p.addedAs;
+  }
   cpPersistPending();
 }
 function cpPersistPending(){
@@ -1605,11 +1608,12 @@ function cpPersistPending(){
 function showCompanionScreen(resume){
   var s=document.getElementById('companionScreen'); if(!s) return;
   var pending=null; if(resume){ try{ pending=JSON.parse(localStorage.getItem('rh_pending_companion')||'null'); }catch(e){} }
-  var nm=document.getElementById('cpName');
-  if(nm) nm.value=(pending&&pending.name) ? pending.name : (window.__phone===RH_FAMILY_LINK.phone ? RH_FAMILY_LINK.memberName : '');   /* resume what was typed, else autofill only when we already know who this number belongs to */
   var si=document.getElementById('cpPatientSearch'); if(si) si.value='';
   var pendingPatient=pending&&pending.patientName ? RH_FAMILY_PATIENTS.filter(function(p){return p.name===pending.patientName;})[0] : null;
   window.__cpSelectedPatient=pendingPatient||RH_FAMILY_PATIENTS[0]||null;   /* default to the first match; the list stays open to pick another */
+  var nm=document.getElementById('cpName');
+  var defaultAutofill=(window.__phone===RH_FAMILY_LINK.phone && window.__cpSelectedPatient && window.__cpSelectedPatient.addedAs) ? window.__cpSelectedPatient.addedAs : '';
+  if(nm) nm.value=(pending&&pending.name) ? pending.name : defaultAutofill;   /* resume what was typed, else autofill with the name the selected patient added them as */
   cpSyncHero(window.__cpSelectedPatient);
   cpRenderPatients('');
   s.style.display=''; s.classList.remove('hide'); s.classList.add('show');
