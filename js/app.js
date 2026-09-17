@@ -9,7 +9,6 @@ function isFamilyRole(){ return !!(window.__profile && window.__profile.role==='
 function applyRoleRestrictions(){
   var fam=isFamilyRole();
   var rt=document.getElementById('rtSection'); if(rt) rt.style.display=(fam?'none':'');   /* Recovery Today is the patient's own daily actions — hidden for family/companion logins */
-  var cta=document.getElementById('famRewardCta'); if(cta) cta.style.display=(fam?'':'none');   /* only a family/companion login gets to pledge a reward */
   var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
   var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
   var patients=document.getElementById('pfPatientsSection'); if(patients) patients.style.display=(fam?'':'none');   /* patient switcher — family/companion logins only */
