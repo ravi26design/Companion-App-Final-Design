@@ -57,13 +57,18 @@ function applyDesktopZoom(el){
   if(document.body.classList.contains('is-desktop') && window.__deskF){ var _vw=window.innerWidth; var _t=Math.min(1.3,(_vw-24)/620); el.style.zoom=_t/window.__deskF; }
   else { el.style.zoom=''; }
 }
-/* bottom sheets (prize / give-a-reward / add-person) live at the body level, outside #phone, so on desktop they'd otherwise stay pinned to their small mobile max-width — size the card to match the phone frame's own rendered width instead */
-function matchSheetToPhoneWidth(sheetEl){
+/* bottom sheets (prize / give-a-reward / add-person) live at the body level, outside #phone, so on desktop they'd otherwise stay pinned to their small mobile max-width — size the card to match the width of the actual content cards on the current screen instead */
+function matchSheetToContentWidth(sheetEl){
   if(!sheetEl) return;
   var card=sheetEl.querySelector('.aps-sheet, .pf-sheet'); if(!card) return;
-  var phone=document.getElementById('phone');
-  if(document.body.classList.contains('is-desktop') && phone){
-    var w=phone.getBoundingClientRect().width;
+  if(document.body.classList.contains('is-desktop')){
+    var ref=document.querySelector('.screen.active .scr-full') || document.querySelector('.screen.active .scr-card');   /* an actual content card — the truest match for "same width as the cards" (.scr-full on the 2-col screens, plain .scr-card on single-column ones like Profile) */
+    var w=0;
+    if(ref){ w=ref.getBoundingClientRect().width; }
+    else{
+      var scr=document.querySelector('.screen.active');
+      if(scr){ var cs=getComputedStyle(scr); w=scr.getBoundingClientRect().width - parseFloat(cs.paddingLeft||0) - parseFloat(cs.paddingRight||0); }
+    }
     if(w>0) card.style.maxWidth=w+'px';
   } else {
     card.style.maxWidth='';
@@ -1896,7 +1901,7 @@ function wishAdd(name){ name=(name||'').trim(); if(!name) return; var a=wishGet(
 function wishAddCustom(){ var inp=document.getElementById('wishInput'); if(!inp) return; wishAdd(inp.value); inp.value=''; inp.focus(); }
 /* Add-a-prize bottom sheet */
 function openPrizeSheet(){ var s=document.getElementById('prizeSheet'); if(!s) return; var i=document.getElementById('prizeInput'); if(i) i.value='';
-  matchSheetToPhoneWidth(s);
+  matchSheetToContentWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons(); setTimeout(function(){ if(i) i.focus(); }, 300); }
 function closePrizeSheet(){ var s=document.getElementById('prizeSheet'); if(s){ s.classList.remove('show'); s.setAttribute('aria-hidden','true'); } }
 function prizeSheetAdd(){ var i=document.getElementById('prizeInput'); if(!i) return; var v=(i.value||'').trim(); if(!v){ i.focus(); return; } wishAdd(v); i.value=''; closePrizeSheet(); }
@@ -1913,7 +1918,7 @@ function openGiveRewardSheet(){
     chips.innerHTML=items.map(function(x){ return '<button type="button" class="wish-chip" data-val="'+wishEsc(x)+'" onclick="giveRewardPick(this)">'+wishEsc(x)+'</button>'; }).join('');
   }
   if(wrap) wrap.style.display=items.length?'':'none';
-  matchSheetToPhoneWidth(s);
+  matchSheetToContentWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false'); if(window.lucide&&lucide.createIcons) lucide.createIcons();
   setTimeout(function(){ if(ri) ri.focus(); }, 300);
 }
@@ -2600,7 +2605,7 @@ function openAddPerson(){
   var seg=document.getElementById('apsRel');
   if(seg) seg.querySelectorAll('.aps-seg-b').forEach(function(b,i){ b.classList.toggle('on', i===0); });
   apsSync();
-  matchSheetToPhoneWidth(s);
+  matchSheetToContentWidth(s);
   s.classList.add('show'); s.setAttribute('aria-hidden','false');
   if(window.lucide&&lucide.createIcons) lucide.createIcons();
 }
