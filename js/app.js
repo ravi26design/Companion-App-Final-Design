@@ -1694,10 +1694,14 @@ function submitCompanion(){
   try{ localStorage.setItem('rh_profile', JSON.stringify(window.__profile)); localStorage.setItem('rh_onboarded','1'); localStorage.removeItem('rh_pending_companion'); }catch(e){}
   rhRegisterUser(window.__profile);   /* remember this number so a later log-in goes straight back to home */
   var rn=document.getElementById('rhName'); if(rn) rn.textContent=nameVal.split(' ')[0];
-  hideCompanionScreen();
+  if(typeof goScreen==='function') goScreen('home');   /* reveal home behind, same as the patient flow */
   applyRoleRestrictions();
-  if(typeof goScreen==='function') goScreen('home');
-  if(typeof scheduleCheckin==='function') scheduleCheckin();
+  hideCompanionScreen();
+  var dn=document.getElementById('doneName'); if(dn) dn.textContent=nameVal.split(' ')[0];
+  var ds=document.getElementById('doneSub'); if(ds) ds.textContent="You're all set to follow "+patient.name.split(' ')[0]+"'s recovery journey — see their progress, cheer them on, and pledge rewards for every milestone.";
+  showDoneModal();                    /* confirmation first, then straight to home */
+  if(window.__doneTimer) clearTimeout(window.__doneTimer);
+  window.__doneTimer=setTimeout(finishOnb, 2600);
 }
 /* ═══ MOBILE NUMBER ═══ */
 function showPhoneScreen(){ var p=document.getElementById('phoneScreen'); if(p) p.classList.add('show'); }
@@ -1825,6 +1829,7 @@ function onbNext(step){
     var pf=window.__profile||{}; var first=(pf.name||'there').split(' ')[0];
     rhRegisterUser(pf);                 /* remember this number so it skips onboarding next time */
     var dn=document.getElementById('doneName'); if(dn) dn.textContent=first;
+    var ds=document.getElementById('doneSub'); if(ds) ds.textContent="Whenever you're ready for a check-in, a craving, or just a hello, I'm right here. One tap on my circle, any time.";
     onbHide('privacyScreen');           /* reveal home behind */
     showDoneModal();                    /* confirmation first */
     if(window.__doneTimer) clearTimeout(window.__doneTimer);
