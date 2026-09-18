@@ -525,7 +525,7 @@
       <!-- Recovery Health -->
       <div class="home-sec gauge-card rh-card" role="button" tabindex="0" onclick="openOv('insights')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openOv('insights');}">
         <div class="rh-inner">
-          <div class="rh-eyebrow" style="display:flex;align-items:center;gap:7px">Recovery Health<button class="help-i" type="button" style="margin-left:auto" aria-label="About Recovery Health" onclick="event.stopPropagation();showHelp('recovery-health')"><i data-lucide="info"></i></button></div>
+          <div class="rh-eyebrow" style="display:flex;align-items:center;gap:7px"><span id="homeRhTitleTxt">Recovery Health</span><button class="help-i" type="button" style="margin-left:auto" aria-label="About Recovery Health" onclick="event.stopPropagation();showHelp('recovery-health')"><i data-lucide="info"></i></button></div>
           <div class="rh-gauge" id="healthGauge"></div>
           <div class="rh-num"><b>74</b></div>
           <div class="rh-outof">out of 100</div>
@@ -627,7 +627,7 @@
       <!-- Streaks -->
       <div class="home-sec sf-card">
         <div>
-          <div class="home-title" style="display:flex;align-items:center;gap:7px">Streaks<button class="help-i" type="button" style="margin-left:auto" aria-label="About streaks" onclick="showHelp('streaks')"><i data-lucide="info"></i></button></div>
+          <div class="home-title" style="display:flex;align-items:center;gap:7px"><span id="homeStreaksTitleTxt">Streaks</span><button class="help-i" type="button" style="margin-left:auto" aria-label="About streaks" onclick="showHelp('streaks')"><i data-lucide="info"></i></button></div>
           <!-- Row 1: Recovery Journey -->
           <div class="streaks-rj">
             <div class="rj-eyebrow">Recovery Journey</div>
@@ -689,7 +689,7 @@
       </div>
 
       <!-- 4. Family Reward Board -->
-      <div class="scr-eyebrow" id="famRewardHead" style="display:flex;align-items:center;gap:7px">Family Reward Board<button class="help-i" type="button" aria-label="About the Family Reward Board" onclick="showHelp('family-rewards')"><i data-lucide="info"></i></button><button class="prize-add-cta" type="button" id="famRewardCta" style="margin-left:auto" onclick="openGiveRewardSheet()"><i data-lucide="plus"></i> Give a reward</button></div>
+      <div class="scr-eyebrow" id="famRewardHead" style="display:flex;align-items:center;gap:7px"><span id="famRewardTitleTxt">Family Reward Board</span><button class="help-i" type="button" aria-label="About the Family Reward Board" onclick="showHelp('family-rewards')"><i data-lucide="info"></i></button><button class="prize-add-cta" type="button" id="famRewardCta" style="margin-left:auto" onclick="openGiveRewardSheet()"><i data-lucide="plus"></i> Give a reward</button></div>
       <div id="famRewardCards">
       <div class="lrow" style="flex-wrap:wrap">
         <div class="lrow-ic" style="background:#FBF4E2;color:#9A7C28;font-size:12px">MOM</div>
@@ -808,7 +808,7 @@
       <!-- Recovery Health over time -->
       <div class="scr-card scr-full">
         <div class="scr-card-h">
-          <div style="display:flex;align-items:center;gap:7px"><div class="scr-card-t">Recovery Health</div><button class="help-i" type="button" style="margin-left:auto" aria-label="About Recovery Health" onclick="showHelp('recovery-health')"><i data-lucide="info"></i></button></div>
+          <div style="display:flex;align-items:center;gap:7px"><div class="scr-card-t" id="matRhTitleTxt">Recovery Health</div><button class="help-i" type="button" style="margin-left:auto" aria-label="About Recovery Health" onclick="showHelp('recovery-health')"><i data-lucide="info"></i></button></div>
           <div class="tf-seg">
             <button class="rh-tf seg-btn on" onclick="selectRHTf('W',this)">W</button>
             <button class="rh-tf seg-btn"    onclick="selectRHTf('M',this)">M</button>
@@ -3889,6 +3889,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=20260919b"></script>
+<script src="js/app.js?v=20260919c"></script>
 </body>
 </html>
