@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260919b">
+<link rel="stylesheet" href="css/styles.css?v=20260919c">
 </head>
 <body>
 
@@ -328,40 +328,6 @@
   </div>
 </div>
 
-<!-- ═══ LOCATION PERMISSION MODAL ═══ -->
-<div id="locModal" aria-hidden="true">
-  <div class="ios-alert">
-    <div class="ios-alert-body">
-      <h2 class="ios-alert-title">Allow &ldquo;Rudra&rdquo; to use your location?</h2>
-      <p class="ios-alert-msg">Rudra uses your location to find treatment providers and recovery support near you. You can change this anytime in Settings.</p>
-    </div>
-    <div class="ios-map">
-      <svg viewBox="0 0 270 150" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <rect width="270" height="150" fill="#E9E5DC"/>
-        <path d="M180 66 q32 -10 56 8 q12 30 -8 52 q-42 8 -56 -16 z" fill="#CFE4B6"/>
-        <rect x="252" y="0" width="18" height="150" fill="#BFE0EA" opacity=".7"/>
-        <g stroke="#fff" stroke-linecap="round" fill="none">
-          <path d="M-10 56 L280 42" stroke-width="9"/>
-          <path d="M60 -10 L98 160" stroke-width="8"/>
-          <path d="M-10 112 L280 130" stroke-width="7"/>
-          <path d="M150 -10 L212 160" stroke-width="6"/>
-          <path d="M-10 96 L150 30" stroke-width="5"/>
-        </g>
-        <circle cx="135" cy="84" r="20" fill="#1A78E5" opacity=".16"/>
-        <circle cx="135" cy="84" r="7.5" fill="#1A78E5" stroke="#fff" stroke-width="3"/>
-        <circle cx="196" cy="58" r="4.5" fill="#E0823C"/>
-        <circle cx="98" cy="40" r="4.5" fill="#C24E8A"/>
-      </svg>
-      <div class="ios-map-badge"><svg viewBox="0 0 24 24" fill="#007AFF" aria-hidden="true"><path d="M3 11l18-8-8 18-2-7-8-3z"/></svg>Precise: On</div>
-    </div>
-    <div class="ios-alert-actions ios-stack">
-      <button class="ios-btn ios-btn-bold" type="button" onclick="allowLocation()">Allow While Using App</button>
-      <button class="ios-btn" type="button" onclick="allowLocation()">Allow Once</button>
-      <button class="ios-btn" type="button" onclick="skipLocation()">Don&rsquo;t Allow</button>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ PUSH NOTIFICATION PERMISSION MODAL ═══ -->
 <div id="pushModal" aria-hidden="true">
   <div class="ios-alert">
@@ -501,7 +467,6 @@
     <button class="dn-item" data-screen="appointments" onclick="goScreen('appointments')"><i data-lucide="calendar"></i><span>Appointments</span></button>
   </nav>
   <div class="dn-right">
-    <button class="dn-checkin" onclick="openOv('location-checkin')" aria-label="Check-in"><i data-lucide="map-pin"></i></button>
     <button class="dn-foot" onclick="openProfileFull()">
       <div class="dn-avatar"><i data-lucide="user-round"></i></div>
       <div class="dn-user"><div>Alex M.</div><small>47-day streak</small></div>
@@ -516,7 +481,7 @@
   <div class="app-header">
     <button class="avatar-btn" aria-label="Profile" onclick="openProfileFull()"><i data-lucide="user-round"></i></button>
     <div class="app-logo" style="cursor:pointer" onclick="goScreen('home')" role="button" tabindex="0" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goScreen('home')}"><img class="brand-img" src="assets/Logo.png" alt="RudraHealth ai"></div>
-    <button class="notif-btn" aria-label="Location" onclick="openOv('location-checkin')"><i data-lucide="map-pin"></i></button>
+    <span style="width:32px;flex-shrink:0" aria-hidden="true"></span>
   </div>
 
   <div class="screen-area" id="screenArea">
@@ -681,7 +646,7 @@
       <div class="rwx-hero scr-full" id="rwxHeroSection">
         <button class="help-i" type="button" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,255,255,.7)" aria-label="About levels & XP" onclick="showHelp('rewards-level')"><i data-lucide="info"></i></button>
         <div class="rwx-medal"><img src="assets/reward-medal.gif" alt="Reward badge"></div>
-        <div class="rwx-name">Level 4 Bloom</div>
+        <div class="rwx-name" id="rwxNameTxt">Level 4 Bloom</div>
         <div class="rwx-xp"><b>2,340</b> XP</div>
         <div class="rwh-prog">
           <div class="rwh-bar"><div class="rwh-bar-fill" style="width:78%"><span class="rwh-bar-dot"></span></div></div>
@@ -1098,7 +1063,7 @@
 
       <!-- Your Patients (family/companion role — switch which patient's home, progress and rewards you're following) -->
       <div class="scr-card" id="pfPatientsSection" style="display:none">
-        <div class="home-title">Your Patients</div>
+        <div class="home-title">Your Family Patients</div>
         <div id="pfPatientList" class="cp-patient-list"></div>
       </div>
 
@@ -1124,7 +1089,7 @@
       </div>
 
       <!-- My People · Call or Text -->
-      <div class="scr-card">
+      <div class="scr-card" id="pfPeopleSection">
         <div class="home-title" style="display:flex;align-items:center;justify-content:space-between;gap:10px"><span>My People · Call or Text</span><button class="pf-add-btn" type="button" onclick="openAddPerson()"><i data-lucide="plus"></i> Add</button></div>
         <div id="pf-contacts">
           <div class="pf-contact"><div class="pf-contact-av" style="background:#6E9E80;color:#fff">DR</div><div class="pf-contact-main"><div class="pf-contact-name">Daniel Ruiz</div><div class="pf-contact-role">Your recovery coach</div></div><div class="pf-contact-btns"><button class="pf-cbtn call" type="button" aria-label="Call Daniel Ruiz" onclick="callContact('Daniel Ruiz','(310) 555-0142')"><i data-lucide="phone"></i></button><button class="pf-cbtn text" type="button" aria-label="Text Daniel Ruiz" onclick="textContact('Daniel Ruiz','(310) 555-0142')"><i data-lucide="message-circle"></i></button></div></div>
@@ -1137,7 +1102,7 @@
       </div>
 
       <!-- Care Team -->
-      <div class="scr-card">
+      <div class="scr-card" id="pfCareTeamSection">
         <div class="home-title">Care Team</div>
         <div class="pf-contact">
           <div class="pf-rav pf-av-sage">Dr</div>
@@ -1154,7 +1119,7 @@
       </div>
 
       <!-- Family Connected -->
-      <div class="scr-card">
+      <div class="scr-card" id="pfFamilyConnectedSection">
         <div class="home-title">Family Connected</div>
         <div class="pf-contact">
           <div class="pf-rav pf-av-gold">M</div>
@@ -3017,47 +2982,6 @@
     </div>
   </div>
 
-  <!-- ═══ FREQUENT LOCATION CHECK-IN ═══ -->
-  <div class="overlay loc-fullmap" id="ov-location-checkin" style="background:#E6E2DB">
-    <!-- Sticky map — real map image with a stylized SVG fallback -->
-    <div class="loc-map-fixed">
-      <svg class="loc-map-svg" viewBox="0 0 300 260" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-        <rect width="300" height="260" fill="#ECE7DE"/>
-        <rect x="0" y="0" width="300" height="16" fill="#C7DDE3"/>
-        <path d="M0 150 Q45 132 90 148 T175 160 L175 260 L0 260 Z" fill="#CFE3B8"/>
-        <rect x="210" y="24" width="90" height="80" rx="6" fill="#CFE3B8"/>
-        <path d="M-10 220 Q120 205 310 224 L310 260 L-10 260 Z" fill="#DFE9CE"/>
-        <g stroke="#fff" stroke-width="8" fill="none"><path d="M-10 74 L310 66"/><path d="M-10 182 L310 196"/><path d="M92 -10 L108 270"/><path d="M204 -10 L222 270"/></g>
-        <g stroke="#fff" stroke-width="4" fill="none"><path d="M-10 126 L310 120"/><path d="M150 -10 L150 270"/></g>
-        <g stroke="#E7CFC4" stroke-width="2" stroke-dasharray="5 5" fill="none"><path d="M-10 130 L310 126"/></g>
-        <g fill="#D9D3C9"><rect x="26" y="86" width="54" height="60" rx="3"/><rect x="118" y="84" width="62" height="62" rx="3"/><rect x="232" y="130" width="58" height="46" rx="3"/><rect x="28" y="200" width="48" height="34" rx="3"/><rect x="120" y="196" width="60" height="40" rx="3"/></g>
-      </svg>
-      <img class="loc-map-img" alt="" src="https://staticmap.openstreetmap.de/staticmap.php?center=45.5152,-122.6784&zoom=16&size=680x560&maptype=mapnik" onerror="this.remove()">
-      <button class="loc-fab loc-fab-back" type="button" onclick="closeOv()" aria-label="Back"><i data-lucide="arrow-left"></i></button>
-      <div class="loc-zoom"><button type="button" aria-label="Zoom in">+</button><button type="button" aria-label="Zoom out">−</button></div>
-      <button class="loc-fab loc-fab-locate" type="button" aria-label="Recenter"><i data-lucide="locate-fixed"></i></button>
-      <span class="loc-pin" style="top:50%;left:50%"><svg viewBox="0 0 24 24" fill="#C25445" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></span>
-      <span class="loc-pin loc-pin-alt" style="top:33%;left:24%"><svg viewBox="0 0 24 24" fill="#6E9E80" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></span>
-      <span class="loc-pin loc-pin-alt" style="top:64%;left:31%"><svg viewBox="0 0 24 24" fill="#6E9E80" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></span>
-      <span class="loc-pin loc-pin-alt" style="top:42%;left:73%"><svg viewBox="0 0 24 24" fill="#6E9E80" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></span>
-      <span class="loc-pin loc-pin-alt" style="top:72%;left:62%"><svg viewBox="0 0 24 24" fill="#6E9E80" aria-hidden="true"><path d="M12 2C8.1 2 5 5.1 5 9c0 5.2 7 13 7 13s7-7.8 7-13c0-3.9-3.1-7-7-7z"/><circle cx="12" cy="9" r="2.6" fill="#fff"/></svg></span>
-    </div>
-
-    <!-- Sheet scrolls up over the map -->
-    <div class="loc-sheet">
-      <div class="loc-grab"></div>
-      <div class="loc-q">Which of the following best describes this place?</div>
-      <div class="loc-opts">
-        <button class="loc-opt" type="button" onclick="locAnswer(this)">My home</button>
-        <button class="loc-opt" type="button" onclick="locAnswer(this)">Someone else's home</button>
-        <button class="loc-opt" type="button" onclick="locAnswer(this)">A shelter, group home, hotel, or other temporary place I stayed</button>
-        <button class="loc-opt" type="button" onclick="locAnswer(this)">A restaurant, business, public place, or other non-residential place</button>
-        <button class="loc-opt" type="button" onclick="locAnswer(this)">I do not recognize this location or was just passing by</button>
-      </div>
-      <button class="loc-submit" id="loc-submit" type="button" onclick="locSubmit()">Submit · +30 XP</button>
-    </div>
-  </div>
-
   <!-- ═══ EMERGENCY CALL SCREEN (simulated) ═══ -->
   <div class="overlay call911-ov" id="ov-call911" style="background:linear-gradient(180deg,#2E333B,#20242B)">
     <div class="call911-inner">
@@ -3898,6 +3822,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=20260919d"></script>
+<script src="js/app.js?v=20260919e"></script>
 </body>
 </html>

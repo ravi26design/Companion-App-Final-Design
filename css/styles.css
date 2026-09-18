@@ -56,8 +56,7 @@ body{font-family:'Cormorant Garamond',Georgia,serif;background:var(--taupe);disp
 .header-right{display:flex;align-items:center;gap:8px}
 .xp-pill{background:var(--gold-lt);border-radius:2px;padding:3px 9px;display:flex;align-items:center;gap:3px;font-family:'Josefin Sans',sans-serif;font-size:10px;font-weight:500;color:var(--gold-dk);cursor:pointer}
 .xp-pill:hover{background:var(--gold);color:#fff}
-.notif-btn,.avatar-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;position:relative}
-.notif-btn{background:var(--beige);font-size:11px;border:2px solid var(--rose);font-family:'Josefin Sans',sans-serif;font-weight:600;color:var(--rose-dk)}
+.avatar-btn{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;position:relative}
 .avatar-btn{background:var(--rose-lt);border:2px solid var(--rose);font-family:'Josefin Sans',sans-serif;font-size:9px;font-weight:600;color:var(--rose-dk);letter-spacing:1px}
 .notif-badge{position:absolute;top:-3px;right:-3px;width:13px;height:13px;border-radius:50%;background:var(--coral);border:1.5px solid var(--cream);font-family:'Josefin Sans',sans-serif;font-size:7px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center}
 
@@ -458,7 +457,6 @@ svg.lucide{display:block;stroke-width:1.75px}
 .stat-cap{font-family:'Josefin Sans',sans-serif;font-size:8px;letter-spacing:.5px;text-transform:uppercase;margin-top:5px;opacity:.85}
 
 /* Header & bottom-nav icons share the same stroke language */
-.notif-btn svg{width:15px;height:15px}
 .nav-icon svg{width:19px;height:19px}
 .nav-sos .nav-icon{background:var(--coral-lt);color:var(--coral-dk);opacity:1}
 .nav-sos.nav-tab:not(.active) .nav-icon{opacity:1}
@@ -484,7 +482,6 @@ body.is-framed .phone{background:var(--app-bg)}
 /* Header — quiet, on cream */
 .app-logo{color:var(--ink);letter-spacing:3px}
 .app-logo small{color:var(--c-coral)}
-.notif-btn{background:#fff;border:1px solid rgba(60,50,45,.08);color:var(--ink-soft)}
 .avatar-btn{background:#fff;border:1px solid rgba(60,50,45,.10);color:var(--ink)}
 
 /* Cards — borderless white, very soft shadow, rounder */
@@ -743,12 +740,7 @@ body.is-desktop .app-header{display:none}          /* top bar replaces the in-ca
 .dn-sos{margin-top:0}
 .dn-foot{flex:0 0 auto;justify-content:flex-end;border-top:none;margin:0;padding:5px 6px;width:auto}
 .dn-foot .dn-user{display:none}                    /* just the avatar on the top bar */
-/* Right cluster: Check-in as an icon-only button, just left of the profile avatar */
 .dn-right{display:flex;align-items:center;gap:10px;flex:1;justify-content:flex-end}
-.dn-checkin{display:flex;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;
-  border-radius:50%;border:1px solid rgba(60,50,45,.10);background:#fff;color:var(--hb-teal-deep);cursor:pointer;transition:background .15s}
-.dn-checkin:hover{background:#F0F3F3}
-.dn-checkin i,.dn-checkin svg{width:19px;height:19px;stroke-width:2}
 
 /* ═══ DESKTOP — wide dashboard panel, cards in 2 columns ═══ */
 body.is-desktop .phone{border-radius:24px}
@@ -1512,11 +1504,10 @@ body.is-desktop .brand-img{height:26px}
   background:rgba(58,51,48,.16);transition:width .3s ease, background .3s ease}
 .wc-dot.active{width:22px;background:var(--sage)}
 
-/* ═══ LOCATION PERMISSION MODAL ═══ */
-#locModal,#pushModal{position:fixed;inset:0;z-index:9600;display:none;align-items:center;justify-content:center;
+#pushModal{position:fixed;inset:0;z-index:9600;display:none;align-items:center;justify-content:center;
   padding:28px;background:rgba(40,36,33,.45)}
-#locModal.show,#pushModal.show{display:flex;animation:lmFade .3s ease both}
-#locModal.hide,#pushModal.hide{opacity:0;pointer-events:none;transition:opacity .3s ease}
+#pushModal.show{display:flex;animation:lmFade .3s ease both}
+#pushModal.hide{opacity:0;pointer-events:none;transition:opacity .3s ease}
 /* native iOS-style permission alert */
 .ios-alert{width:270px;max-width:82%;border-radius:14px;overflow:hidden;
   background:rgba(248,248,248,.82);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);
@@ -1525,16 +1516,7 @@ body.is-desktop .brand-img{height:26px}
 .ios-alert-body{padding:19px 16px 15px;text-align:center}
 .ios-alert-title{font-size:17px;font-weight:600;color:#1c1c1e;line-height:1.28;margin:0 0 4px}
 .ios-alert-msg{font-size:13px;line-height:1.36;color:#1c1c1e;margin:0}
-.ios-map{position:relative;width:100%;height:148px;overflow:hidden;border-top:.5px solid rgba(60,60,67,.18)}
-.ios-map svg{display:block;width:100%;height:100%}
-.ios-map-badge{position:absolute;top:10px;left:10px;display:flex;align-items:center;gap:5px;
-  background:rgba(255,255,255,.92);border-radius:999px;padding:5px 11px 5px 9px;
-  font-family:-apple-system,system-ui,'SF Pro Text',sans-serif;font-size:13px;font-weight:600;color:#007AFF;
-  box-shadow:0 1px 5px rgba(0,0,0,.14)}
-.ios-map-badge svg{width:13px;height:13px;flex-shrink:0}
 .ios-alert-actions{border-top:.5px solid rgba(60,60,67,.3)}
-.ios-stack{display:flex;flex-direction:column}
-.ios-stack .ios-btn+.ios-btn{border-top:.5px solid rgba(60,60,67,.3)}
 .ios-row{display:flex}
 .ios-row .ios-btn{flex:1}
 .ios-row .ios-btn+.ios-btn{border-left:.5px solid rgba(60,60,67,.3)}
@@ -2423,10 +2405,6 @@ body.is-desktop .rl-acts{grid-template-columns:1fr}
 @keyframes scrIn{from{opacity:0;transform:translateY(10px) scale(.994)}to{opacity:1;transform:none}}
 .screen{animation:scrIn .5s cubic-bezier(.16,.84,.44,1)}
 
-/* 3) Home header: location (map-pin) icon matches the profile-avatar style */
-.notif-btn{background:#fff;border:1px solid rgba(60,50,45,.08);color:var(--hb-teal-deep)}
-.notif-btn i,.notif-btn svg{width:16px;height:16px;stroke-width:2}
-
 /* 4) Card titles read smaller on mobile (-2px) */
 body.is-mobile .scr-card-t{font-size:15px}
 
@@ -2674,24 +2652,6 @@ body.is-mobile .lr-name{font-size:12px}
 #ov-edit-triggers .onb-input:focus,#ov-edit-activities .onb-input:focus{border-color:var(--sage)}
 #ov-edit-triggers .onb-add,#ov-edit-activities .onb-add{background:var(--sage)!important;color:#fff!important;box-shadow:0 6px 16px rgba(110,158,128,.28)!important}
 
-/* ============ Frequent Location Check-in ============ */
-.loc-map{position:relative;border-radius:16px;overflow:hidden;box-shadow:var(--card-shadow);margin-bottom:14px;aspect-ratio:300/190;background:#ECE7DE}
-.loc-map svg{width:100%;height:100%;display:block}
-.loc-map-pill{position:absolute;top:18px;left:50%;transform:translateX(-50%);white-space:nowrap;display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:999px;padding:7px 13px;font-family:var(--font-ui);font-size:11.5px;font-weight:600;color:var(--ink);box-shadow:0 3px 10px rgba(58,51,48,.18);z-index:5}
-.loc-map-pill i,.loc-map-pill svg{width:13px;height:13px;color:var(--sage-dk)}
-.loc-zoom{position:absolute;top:70px;right:16px;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 3px 10px rgba(58,51,48,.18);display:flex;flex-direction:column;z-index:5}
-.loc-zoom button{width:34px;height:34px;border:none;background:#fff;font-size:18px;line-height:1;color:var(--ink);cursor:pointer}
-.loc-zoom button:first-child{border-bottom:1px solid var(--border)}
-.loc-pin{position:absolute;top:50%;left:50%;transform:translate(-50%,-100%);width:30px;height:30px;pointer-events:none}
-.loc-pin svg{width:100%;height:100%;filter:drop-shadow(0 3px 5px rgba(58,51,48,.3))}
-/* secondary frequent-location pins — smaller than the current-location pin */
-.loc-pin-alt{width:23px;height:23px;opacity:.92}
-.loc-q{font-family:var(--font-display);font-size:16px;font-weight:700;color:var(--ink);margin-bottom:12px;line-height:1.3}
-.loc-opts{display:flex;flex-direction:column;gap:10px}
-.loc-opt{width:100%;text-align:left;background:#fff;border:1.5px solid rgba(54,59,59,.14);border-radius:14px;padding:14px 16px;font-family:var(--font-ui);font-size:13px;color:var(--ink);cursor:pointer;transition:border-color .15s ease,background .15s ease,transform .12s ease;line-height:1.35}
-.loc-opt:active{transform:scale(.99)}
-.loc-opt.sel{border-color:#5E8560;background:#F3F8F2;color:#3F5E41;font-weight:600}
-
 /* Desktop: Profile is a single full-width column (not the 2-column dashboard grid) so the hero + cards sit full width below the title */
 body.is-desktop #screen-profile.active{display:block;column-count:1;grid-template-columns:none}
 /* Desktop: Profile is a focused takeover page — hide the main top nav so the "My Profile" header is the only header */
@@ -2837,43 +2797,6 @@ body.is-desktop .ct-row:has(.ct-btns) .ct-btn{flex:none;padding:0 18px}
 .hp-scrollcard .helps-card-ic{width:26px;height:26px;border-radius:8px}
 .hp-scrollcard .helps-card-ic i,.hp-scrollcard .helps-card-ic svg{width:15px;height:15px}
 .pf-tagchip i,.pf-tagchip svg{width:15px;height:15px}
-
-/* ===== Location Check-in — Google-Maps-style: fixed map + scrolling info sheet ===== */
-#ov-location-checkin.loc-fullmap.active{display:block;padding:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
-.loc-map-fixed{position:sticky;top:0;height:44%;min-height:230px;overflow:hidden;background:#E4E7EC}
-.loc-map-svg{position:absolute;inset:0;width:100%;height:100%;display:block}
-.loc-map-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
-.loc-fab{position:absolute;width:32px;height:32px;border-radius:50%;border:none;background:#fff;box-shadow:0 2px 8px rgba(58,51,48,.16);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);z-index:6;transition:transform .12s ease}
-.loc-fab:active{transform:scale(.92)}
-.loc-fab i,.loc-fab svg{width:18px;height:18px}
-.loc-fab-back{top:16px;left:16px}
-.loc-fab-locate{right:16px;bottom:34px;color:#5B92CE}
-.loc-sheet{position:relative;z-index:3;min-height:100%;background:var(--app-bg);border-radius:22px 22px 0 0;margin-top:-24px;padding:6px 16px 44px;box-shadow:0 -8px 22px rgba(58,51,48,.12)}
-.loc-sheet .loc-q{margin-top:6px}
-.loc-grab{width:38px;height:4px;border-radius:2px;background:rgba(58,51,48,.14);margin:6px auto 12px}
-.loc-place{display:flex;align-items:center;gap:12px;padding:2px 2px 14px}
-.loc-place-ic{flex-shrink:0;width:46px;height:46px;border-radius:50%;background:#6E9E80;color:#fff;display:flex;align-items:center;justify-content:center}
-.loc-place-ic i,.loc-place-ic svg{width:22px;height:22px}
-.loc-place-main{flex:1;min-width:0}
-.loc-place-name{font-family:var(--font-display);font-size:18px;font-weight:700;color:var(--ink);line-height:1.2}
-.loc-place-addr{font-family:var(--font-ui);font-size:12.5px;color:var(--ink-soft);margin-top:2px}
-.loc-submit{width:100%;margin-top:16px;padding:16px;border:none;border-radius:16px;background:linear-gradient(135deg,#6DA0CC,#3F6E99);color:#fff;font-family:var(--font-ui);font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;opacity:.5;pointer-events:none;transition:opacity .2s ease,box-shadow .2s ease,transform .12s ease}
-.loc-submit.ready{opacity:1;pointer-events:auto;box-shadow:0 10px 24px rgba(87,124,174,.3)}
-.loc-submit:active{transform:scale(.98)}
-.loc-note{display:flex;gap:11px;align-items:flex-start;background:#fff;border-radius:14px;padding:13px 15px;margin-top:14px;box-shadow:var(--card-shadow)}
-.loc-note i,.loc-note svg{width:18px;height:18px;color:var(--sage);flex-shrink:0;margin-top:1px}
-.loc-note > div{font-family:var(--font-ui);font-size:12px;color:var(--ink-soft);line-height:1.5}
-/* desktop: full-viewport modal at native scale (the page-zoom counter-scale breaks the sticky map + centering) */
-body.is-desktop #ov-location-checkin.loc-fullmap.active{
-  zoom:1 !important;
-  position:fixed;inset:0;z-index:9000;max-width:none;margin:0;
-  display:block;overflow-y:auto;background:var(--app-bg)}
-/* map spans full width with a comfortable fixed height */
-body.is-desktop #ov-location-checkin .loc-map-fixed{height:340px;min-height:0}
-/* keep the question + options in a readable centered column */
-body.is-desktop #ov-location-checkin .loc-sheet{
-  padding-left:calc((100% - 600px) / 2 + 16px);
-  padding-right:calc((100% - 600px) / 2 + 16px)}
 
 /* ===== Global screen background — soft lavender (every screen + overlay; splash stays white) ===== */
 :root{--app-bg:#F1F1F8}

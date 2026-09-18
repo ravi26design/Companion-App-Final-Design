@@ -12,6 +12,9 @@ function applyRoleRestrictions(){
   var med=document.getElementById('pfMedSection'); if(med) med.style.display=(fam?'none':'');   /* Medication is the patient's own care info — hidden for family/companion logins */
   var help=document.getElementById('pfHelpsMeSection'); if(help) help.style.display=(fam?'none':'');   /* What Helps Me is the patient's own coping list — hidden for family/companion logins */
   var patients=document.getElementById('pfPatientsSection'); if(patients) patients.style.display=(fam?'':'none');   /* patient switcher — family/companion logins only */
+  ['pfPeopleSection','pfCareTeamSection','pfFamilyConnectedSection'].forEach(function(id){
+    var el=document.getElementById(id); if(el) el.style.display=(fam?'none':'');   /* the patient's own contacts/care team/family list — hidden for family/companion logins */
+  });
   ['gratitudeSection','levelRoadmapSection'].forEach(function(id){
     var el=document.getElementById(id); if(el) el.style.display=(fam?'none':'');   /* the patient's own XP/gamification progress — hidden for family/companion logins */
   });
@@ -115,7 +118,6 @@ function openOv(id){
   if(id==='rooms'){   /* Community is a nav destination — light up its nav tab */
     document.querySelectorAll('.bottom-nav .nav-tab, #dnav .dn-item').forEach(function(t){ t.classList.toggle('active', ((t.getAttribute('onclick')||'').indexOf("'rooms'")>=0)); });
   }
-  if(id==='location-checkin'){ el.querySelectorAll('.loc-opt.sel').forEach(function(o){o.classList.remove('sel');}); var _sb=document.getElementById('loc-submit'); if(_sb) _sb.classList.remove('ready'); }  /* fresh state each open */
   try{localStorage.setItem('rh_ov',id);}catch(e){}
 }
 function closeOv(){if(typeof stopPageAudio==='function')stopPageAudio();if(typeof stopBreath==='function')stopBreath();if(typeof stopUrgeBreath==='function')stopUrgeBreath();if(call911Timer){clearInterval(call911Timer);call911Timer=null;}document.querySelectorAll('.overlay').forEach(function(o){o.classList.remove('active');o.style.zoom='';});try{localStorage.removeItem('rh_ov');}catch(e){}}
@@ -1063,6 +1065,11 @@ function applyPatientNameHeadings(){
   Object.keys(titles).forEach(function(id){
     var el=document.getElementById(id); if(el) el.textContent=titles[id]+(first?' · '+first:'');
   });
+  var rn=document.getElementById('rwxNameTxt');   /* Rewards hero: patient name comes first — "John · Level 4 Bloom" */
+  if(rn){
+    if(!rn.dataset.base) rn.dataset.base=rn.textContent;
+    rn.textContent=first ? (first+' · '+rn.dataset.base) : rn.dataset.base;
+  }
 }
 /* reusable arc gauge (0–100) with an animated needle — used by the Insights screen */
 function buildArcGauge(elId, val){
@@ -1845,7 +1852,7 @@ function onbNext(step){
     onbHide('privacyScreen');           /* reveal home behind */
     showDoneModal();                    /* confirmation first */
     if(window.__doneTimer) clearTimeout(window.__doneTimer);
-    window.__doneTimer=setTimeout(doneThenLocation, 2600);   /* ...then ask for location */
+    window.__doneTimer=setTimeout(finishOnb, 2600);
   }
 }
 function showDoneModal(){ var m=document.getElementById('doneModal'); if(m){ m.classList.remove('hide'); m.classList.add('show'); } }
@@ -1853,12 +1860,6 @@ function finishOnb(){ if(window.__doneTimer){ clearTimeout(window.__doneTimer); 
   var m=document.getElementById('doneModal'); if(!m) return;
   m.classList.add('hide'); setTimeout(function(){ m.classList.remove('show','hide'); m.style.display='none'; }, 400);
   scheduleCheckin();   /* prompt daily check-in shortly after landing on home */
-}
-/* confirmation is shown first; dismiss it, then ask for location permission */
-function doneThenLocation(){ if(window.__doneTimer){ clearTimeout(window.__doneTimer); window.__doneTimer=null; }
-  var m=document.getElementById('doneModal');
-  if(m){ m.classList.add('hide'); setTimeout(function(){ m.classList.remove('show','hide'); m.style.display='none'; }, 400); }
-  setTimeout(showLocModal, 460);   /* location permission after the confirmation */
 }
 function scheduleCheckin(){ if(window.__checkinTimer) clearTimeout(window.__checkinTimer); }   /* Daily Check-In popup removed — no longer auto-prompts */
 function showCheckinModal(){ var m=document.getElementById('checkinModal'); if(!m) return;
@@ -2055,25 +2056,6 @@ function checkinBegin(){ hideCheckinModal();
   window.__ciMode=false;
   if(typeof openReflect==='function') openReflect(); }
 function ciCancel(){ window.__ciMode=false; onbHide('triggersScreen'); onbHide('reliefScreen'); }
-/* ═══ LOCATION PERMISSION ═══ */
-function showLocModal(){ var m=document.getElementById('locModal'); if(m) m.classList.add('show'); }
-function hideLocModal(){ var m=document.getElementById('locModal'); if(!m) return;
-  m.classList.add('hide'); setTimeout(function(){ m.style.display='none'; }, 320); }
-function allowLocation(){
-  hideLocModal();
-  /* trigger the real browser/system location prompt */
-  try{
-    if(navigator.geolocation){
-      navigator.geolocation.getCurrentPosition(
-        function(pos){ window.__loc={lat:pos.coords.latitude,lng:pos.coords.longitude}; },
-        function(err){ /* denied or unavailable — the app still works without it */ },
-        {enableHighAccuracy:false, timeout:10000, maximumAge:600000}
-      );
-    }
-  }catch(e){}
-  setTimeout(scheduleCheckin, 360);            /* confirmation already shown -> land on home */
-}
-function skipLocation(){ hideLocModal(); setTimeout(scheduleCheckin, 360); }
 function showPushModal(){ var m=document.getElementById('pushModal'); if(!m) return;
   m.style.display=''; m.classList.remove('hide'); m.classList.add('show');
   if(window.lucide&&lucide.createIcons) lucide.createIcons(); }
@@ -2477,15 +2459,6 @@ function mtSaveAdd(){
   if(typeof renderProfileLists==='function') renderProfileLists();
   if(typeof pfPersist==='function') pfPersist();
 }
-
-/* Frequent Location Check-in: pick a place type, award XP, close */
-function locAnswer(btn){
-  var opts=btn.parentNode.querySelectorAll('.loc-opt');
-  for(var i=0;i<opts.length;i++) opts[i].classList.remove('sel');
-  btn.classList.add('sel');
-  var sb=document.getElementById('loc-submit'); if(sb) sb.classList.add('ready');  /* enable the Submit CTA */
-}
-function locSubmit(){ closeOv(); if(typeof showXPPopup==='function') showXPPopup(30, 'Check-in Complete!'); }
 function pfTelHref(num){ return 'tel:'+String(num).replace(/[^\d+]/g,''); }
 function callContact(name,num){ try{ window.location.href=pfTelHref(num); }catch(e){} }
 function textContact(name,num){ try{ window.location.href='sms:'+String(num).replace(/[^\d+]/g,''); }catch(e){} }
