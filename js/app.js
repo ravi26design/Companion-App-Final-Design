@@ -1054,15 +1054,14 @@ function applyPatientHomeStats(){
   applyPatientNameHeadings();
 }
 /* Family/companion logins see whose data they're looking at, right in the section titles
-   (e.g. "Alex's Recovery Health") instead of a generic heading — useful once a family
+   (e.g. "Recovery Health · John") instead of a generic heading — useful once a family
    member can switch between more than one linked patient. Patient logins keep the plain title. */
 function applyPatientNameHeadings(){
   var fam=isFamilyRole();
   var first=fam ? ((window.__profile&&window.__profile.linkedPatient)||'').split(' ')[0] : '';
-  var poss=first ? (first+"'s ") : '';
   var titles={homeRhTitleTxt:'Recovery Health', homeStreaksTitleTxt:'Streaks', matRhTitleTxt:'Recovery Health', famRewardTitleTxt:'Family Reward Board'};
   Object.keys(titles).forEach(function(id){
-    var el=document.getElementById(id); if(el) el.textContent=(fam?poss:'')+titles[id];
+    var el=document.getElementById(id); if(el) el.textContent=titles[id]+(first?' · '+first:'');
   });
 }
 /* reusable arc gauge (0–100) with an animated needle — used by the Insights screen */

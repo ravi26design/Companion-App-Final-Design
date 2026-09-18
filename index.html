@@ -15,7 +15,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700;800&family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-<link rel="stylesheet" href="css/styles.css?v=20260919a">
+<link rel="stylesheet" href="css/styles.css?v=20260919b">
 </head>
 <body>
 
@@ -425,7 +425,8 @@
     </div>
     <div id="giveRewardWishWrap" style="display:none">
       <label class="aps-l">Pick a reward</label>
-      <div class="wish-common" id="giveRewardWishChips" style="margin-bottom:14px"></div>
+      <div class="wish-common" id="giveRewardWishChips"></div>
+      <hr class="aps-divider">
     </div>
     <label class="aps-l" for="giveRewardInput">Reward <span style="font-weight:400;color:var(--muted)">(pick one above, or write your own)</span></label>
     <input class="aps-in" type="text" id="giveRewardInput" placeholder="e.g. Dinner at Olive Garden" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();document.getElementById('giveRewardCond').focus()}">
@@ -433,7 +434,7 @@
     <input class="aps-in" type="text" id="giveRewardCond" placeholder="e.g. 30-day MOUD Streak" autocomplete="off" onkeydown="if(event.key==='Enter'){event.preventDefault();giveRewardSheetAdd()}">
     <div class="aps-actions">
       <button class="aps-cancel" type="button" onclick="closeGiveRewardSheet()">Cancel</button>
-      <button class="aps-add" type="button" onclick="giveRewardSheetAdd()">Give reward</button>
+      <button class="aps-add" type="button" onclick="giveRewardSheetAdd()"><i data-lucide="gift"></i> Give reward</button>
     </div>
   </div>
 </div>
@@ -522,6 +523,10 @@
 
     <!-- ═══ HOME ═══ -->
     <div class="screen active" id="screen-home">
+      <div class="scr-head scr-full">
+        <div class="scr-title">Home</div>
+        <div class="scr-sub">Your daily recovery snapshot — health, streaks, and today's plan, all in one place.</div>
+      </div>
       <!-- Recovery Health -->
       <div class="home-sec gauge-card rh-card" role="button" tabindex="0" onclick="openOv('insights')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openOv('insights');}">
         <div class="rh-inner">
@@ -668,6 +673,10 @@
 
     <!-- ═══ REWARDS SCREEN (Major Gamification Hub) ═══ -->
     <div class="screen" id="screen-rewards">
+      <div class="scr-head scr-full">
+        <div class="scr-title">Rewards</div>
+        <div class="scr-sub">Earn XP for daily actions, level up, and celebrate milestones with rewards from family and friends.</div>
+      </div>
       <!-- 1 + 2. Celebration hero -->
       <div class="rwx-hero scr-full" id="rwxHeroSection">
         <button class="help-i" type="button" style="position:absolute;top:14px;right:14px;z-index:2;background:rgba(255,255,255,.7)" aria-label="About levels & XP" onclick="showHelp('rewards-level')"><i data-lucide="info"></i></button>
@@ -3889,6 +3898,6 @@
   </div>
 </div>
 
-<script src="js/app.js?v=20260919c"></script>
+<script src="js/app.js?v=20260919d"></script>
 </body>
 </html>
