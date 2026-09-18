@@ -1061,10 +1061,12 @@ function applyPatientHomeStats(){
 function applyPatientNameHeadings(){
   var fam=isFamilyRole();
   var first=fam ? ((window.__profile&&window.__profile.linkedPatient)||'').split(' ')[0] : '';
-  var titles={homeRhTitleTxt:'Recovery Health', homeStreaksTitleTxt:'Streaks', matRhTitleTxt:'Recovery Health', famRewardTitleTxt:'Family Reward Board'};
+  var titles={famRewardTitleTxt:'Family Reward Board'};   /* Recovery Health / Streaks stay plain — the page title above them already names the patient */
   Object.keys(titles).forEach(function(id){
     var el=document.getElementById(id); if(el) el.textContent=titles[id]+(first?' · '+first:'');
   });
+  ['homeRhTitleTxt','matRhTitleTxt'].forEach(function(id){ var el=document.getElementById(id); if(el) el.textContent='Recovery Health'; });
+  var st=document.getElementById('homeStreaksTitleTxt'); if(st) st.textContent='Streaks';
   var rn=document.getElementById('rwxNameTxt');   /* Rewards hero: patient name comes first — "John · Level 4 Bloom" */
   if(rn){
     if(!rn.dataset.base) rn.dataset.base=rn.textContent;
