@@ -1070,6 +1070,13 @@ function applyPatientNameHeadings(){
     if(!rn.dataset.base) rn.dataset.base=rn.textContent;
     rn.textContent=first ? (first+' · '+rn.dataset.base) : rn.dataset.base;
   }
+  /* page titles personalize with whoever's data is shown — the patient's own name when logged in as
+     patient, or the currently-selected linked patient when logged in as family/companion */
+  var curFirst=(fam ? ((window.__profile&&window.__profile.linkedPatient)||'') : ((window.__profile&&window.__profile.name)||'')).split(' ')[0];
+  var pageTitles={homeTitleTxt:'Overview', rewardsTitleTxt:'Rewards', progressTitleTxt:'Progress'};
+  Object.keys(pageTitles).forEach(function(id){
+    var el=document.getElementById(id); if(el) el.textContent=curFirst ? (curFirst+' '+pageTitles[id]) : pageTitles[id];
+  });
 }
 /* reusable arc gauge (0–100) with an animated needle — used by the Insights screen */
 function buildArcGauge(elId, val){
